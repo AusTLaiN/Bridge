@@ -16,7 +16,8 @@ SOURCES += \
     Server/game.cpp \
     Server/Cards/card.cpp \
     Server/Cards/six.cpp \
-    Server/Actions/abstractaction.cpp
+    Server/Actions/abstractaction.cpp \
+    Server/Actions/blockturn.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -39,4 +40,6 @@ HEADERS += \
     Server/Cards/card.h \
     Server/Cards/six.h \
     Server/Actions/abstractaction.h \
+    Server/Cards/cards.h \
+    Server/Actions/blockturn.h
 

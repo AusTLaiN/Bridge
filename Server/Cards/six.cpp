@@ -10,5 +10,5 @@ Six::Six(Card::Suit suit, QObject *parent) :
 
 void Six::action()
 {
-
+    qDebug("Six::action");
 }

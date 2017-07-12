@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "Server/Cards/card.h"
+#include "card.h"
 
 class Six : public Card
 {

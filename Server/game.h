@@ -3,6 +3,9 @@
 
 #include <QObject>
 
+#include "Server/deck.h"
+#include "Server/player.h"
+
 class Game : public QObject
 {
     Q_OBJECT

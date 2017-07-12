@@ -36,7 +36,7 @@ QString Card::cardName(Card::Rank card_rank, Card::Suit card_suit)
     QMetaEnum metaRank = QMetaEnum::fromType<Card::Rank>();
     QMetaEnum metaSuit = QMetaEnum::fromType<Card::Suit>();
 
-    return QString("Card(%1 %2)").arg(metaRank.key(card_rank), metaSuit.key(card_suit));
+    return QString("Card(%1,%2)").arg(metaRank.valueToKey(card_rank), metaSuit.valueToKey(card_suit));
 }
 
 // Static end
