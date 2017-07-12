@@ -5,11 +5,9 @@
 
 #include "Server/game.h"
 #include "Server/player.h"
-#include "Server/deck.h"
 
 class Player;
 class Game;
-class Deck;
 
 class AbstractAction : public QObject
 {
@@ -23,7 +21,7 @@ signals:
     void done();
 
 public slots:
-    virtual void proceed(Game* game, Player* made_by, Deck* deck) = 0;
+    virtual void proceed(Game *game, Player *made_by) = 0;
 };
 
 #endif // ABSTRACTACTION_H

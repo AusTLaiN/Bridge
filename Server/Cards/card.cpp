@@ -1,5 +1,7 @@
 #include "card.h"
 
+#include "Server/game.h"
+
 #include <QMetaEnum>
 
 // Static functions
@@ -41,24 +43,24 @@ QString Card::cardName(Card::Rank card_rank, Card::Suit card_suit)
 
 // Static end
 
-Card::Card(QObject *parent) :
-    QObject(parent),
-    _playable(false),
-    _name("Unknown"),
-    _value(-1)
+Card::Card(Card::Rank rank, Card::Suit suit, QObject *parent) :
+    QObject(parent)
 {
+    setRank(rank);
+    setSuit(suit);
+    setValue(cardValue(rank));
+    setPlayable(true);
 }
 
 Card::~Card()
 {
 }
 
+// Getters and setters
 
 bool Card::isPlayable() { return _playable; }
 
 int Card::getValue() { return _value; }
-
-QString Card::getName() { return _name; }
 
 Card::Suit Card::getSuit() { return _suit; }
 
@@ -68,16 +70,19 @@ void Card::setPlayable(bool playable) { _playable = playable; }
 
 void Card::setValue(int value) { _value = value; }
 
-void Card::setName(const QString &name) { _name = name; }
-
 void Card::setSuit(Card::Suit suit) { _suit = suit; }
 
 void Card::setRank(Card::Rank rank) { _rank = rank; }
 
+// Getters and setters end
 
-void Card::init()
+QString Card::toString()
 {
-    setValue(cardValue(getRank()));
-    setName(cardName(getRank(), getSuit()));
-    setPlayable(true);
+    return cardName(getRank(), getSuit());
+}
+
+void Card::action(Game *game)
+{
+    qDebug("Card::action:");
+    qDebug() << this->toString();
 }

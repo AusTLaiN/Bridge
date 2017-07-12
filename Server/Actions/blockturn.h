@@ -3,15 +3,17 @@
 
 #include <QObject>
 
-class BlockTurn : public QObject
+#include "abstractaction.h"
+
+class BlockTurn : public AbstractAction
 {
     Q_OBJECT
+
 public:
     explicit BlockTurn(QObject *parent = 0);
 
-signals:
-
 public slots:
+    virtual void proceed(Game *game, Player *made_by) override;
 };
 
 #endif // BLOCKTURN_H

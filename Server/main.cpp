@@ -3,7 +3,7 @@
 #include <QTextStream>
 
 #include "Server/game.h"
-#include "Server/Cards/six.h"
+#include "Server/deck.h"
 
 int main(int argc, char *argv[])
 {
@@ -14,10 +14,19 @@ int main(int argc, char *argv[])
 
     qcout << "Server started" << endl;
 
-    Six card(Card::Clubs);
+    Deck deck;
 
-    qcout << card.getName() << endl;
-    qcout << card.getValue() << endl;
+    for (QString& card : deck.toStringList())
+    {
+        qcout << card << endl;
+    }
+
+    deck.shake();
+
+    for (QString& card : deck.toStringList())
+    {
+        qcout << card << endl;
+    }
 
     qcout.flush();
     return a.exec();

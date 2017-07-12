@@ -4,3 +4,8 @@ AbstractAction::AbstractAction(QObject *parent)
     : QObject(parent)
 {
 }
+
+AbstractAction::~AbstractAction()
+{
+
+}

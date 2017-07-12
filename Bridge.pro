@@ -17,7 +17,15 @@ SOURCES += \
     Server/Cards/card.cpp \
     Server/Cards/six.cpp \
     Server/Actions/abstractaction.cpp \
-    Server/Actions/blockturn.cpp
+    Server/Actions/blockturn.cpp \
+    Server/Cards/seven.cpp \
+    Server/Cards/jack.cpp \
+    Server/Cards/eight.cpp \
+    Server/Cards/nine.cpp \
+    Server/Cards/ten.cpp \
+    Server/Cards/queen.cpp \
+    Server/Cards/king.cpp \
+    Server/Cards/ace.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -41,5 +49,13 @@ HEADERS += \
     Server/Cards/six.h \
     Server/Actions/abstractaction.h \
     Server/Cards/cards.h \
-    Server/Actions/blockturn.h
+    Server/Actions/blockturn.h \
+    Server/Cards/seven.h \
+    Server/Cards/jack.h \
+    Server/Cards/eight.h \
+    Server/Cards/nine.h \
+    Server/Cards/ten.h \
+    Server/Cards/queen.h \
+    Server/Cards/king.h \
+    Server/Cards/ace.h
 

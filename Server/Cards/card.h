@@ -3,6 +3,9 @@
 
 #include <QObject>
 #include <QSharedPointer>
+#include <QDebug>
+
+class Game;
 
 class Card : public QObject
 {
@@ -38,37 +41,29 @@ public:
     static QString cardName(Rank card_rank, Suit card_suit);
 
 public:
-    explicit Card(QObject *parent = 0);
+    explicit Card(Rank rank, Suit suit, QObject *parent = 0);
     virtual ~Card() = 0;
 
     bool isPlayable();
     int getValue();
-    QString getName();
     Suit getSuit();
     Rank getRank();
 
+    virtual QString toString();
+
 signals:
     void playableChanged(bool flag);
-    /*void nameChanged(const QString &name);
-    void valueChanged(int value);
-    void suitChanged(Suit suit);
-    void rankChanged(Rank rank);*/
 
 public slots:
     void setPlayable(bool playable);
     void setValue(int value);
-    void setName(const QString &name);
     void setSuit(Suit suit);
     void setRank(Rank rank);
 
-    virtual void action() = 0;
-
-protected:
-    void init();
+    virtual void action(Game* game);
 
 protected:
     bool _playable;
-    QString _name;
     int _value;
     Rank _rank;
     Suit _suit;
