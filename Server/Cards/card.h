@@ -2,6 +2,7 @@
 #define CARD_H
 
 #include <QObject>
+#include <QSharedPointer>
 
 class Card : public QObject
 {

@@ -3,25 +3,22 @@
 
 #include <QObject>
 
-#include "Server/card.h"
+#include "Server/Cards/card.h"
 
 class Deck : public QObject
 {
     Q_OBJECT
 
 public:
-    static Deck createDefault();
-
-public:
     explicit Deck(QObject *parent = 0);
     ~Deck();
 
-    Card::CardList getRemaining();
-    Card::CardList getPlayed();
-    Card::CardList getGraveyard();
+    const Card::CardList& getRemaining();
+    const Card::CardList& getPlayed();
+    const Card::CardList& getGraveyard();
 
 signals:
-    // No signals
+    void cardPlayed(Card* card);
 
 public slots:     
     QSharedPointer<Card> lastPlayed();

@@ -1,6 +1,14 @@
 #include "six.h"
 
-Six::Six(QObject *parent) : QObject(parent)
+Six::Six(Card::Suit suit, QObject *parent) :
+    Card(parent)
+{
+    setRank(Card::Six);
+    setSuit(suit);
+    init();
+}
+
+void Six::action()
 {
 
 }

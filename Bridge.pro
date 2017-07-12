@@ -12,9 +12,11 @@ TEMPLATE = app
 SOURCES += \
     Server/main.cpp \
     Server/player.cpp \
-    Server/card.cpp \
     Server/deck.cpp \
-    Server/game.cpp
+    Server/game.cpp \
+    Server/Cards/card.cpp \
+    Server/Cards/six.cpp \
+    Server/Actions/abstractaction.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -32,6 +34,9 @@ DISTFILES += \
 
 HEADERS += \
     Server/player.h \
-    Server/card.h \
     Server/deck.h \
-    Server/game.h
+    Server/game.h \
+    Server/Cards/card.h \
+    Server/Cards/six.h \
+    Server/Actions/abstractaction.h \
+
