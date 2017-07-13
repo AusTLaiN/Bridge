@@ -40,7 +40,11 @@ signals:
     void playerJoined(PlayerPtr player);
     void playerLeft(PlayerPtr player);
 
-    void gameStateChanged();
+    void playerTakenCard(PlayerPtr player, CardPtr card);
+    void playerSkippedTurn(PlayerPtr player);
+    void playerTakenExtraTurn(PlayerPtr player);
+
+    void gameStateChanged(GameStates state);
     void gameStarted();
     void newRoundStarted();
 
@@ -51,7 +55,13 @@ public slots:
     void join(PlayerPtr player);
     void leave(PlayerPtr player);
 
+    void takeCard(PlayerPtr target);
+
     void start();
+    void pause();
+
+protected slots:
+    void changeGameState(GameStates state);
 
 protected:
     DeckPtr deck;

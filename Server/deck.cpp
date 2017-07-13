@@ -7,7 +7,7 @@ Deck::Deck(QObject *parent) :
 {
     QMetaEnum suits = QMetaEnum::fromType<Card::Suit>();
 
-    for (int i = 0; i < suits.keyCount(); ++i)
+    for (int i = 1; i < suits.keyCount(); ++i)
     {
         auto suit = static_cast<Card::Suit>(suits.value(i));
 

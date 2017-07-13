@@ -19,7 +19,8 @@ class Card : public QObject
 
 public:
     enum Suit {
-        Clubs = 1,
+        UndefinedSuit = 0,
+        Clubs,
         Diamonds,
         Hearts,
         Spades
@@ -27,6 +28,7 @@ public:
     Q_ENUM(Suit)
 
     enum Rank {
+        UndefinedRank = 0,
         Six = 6,
         Seven = 7,
         Eight = 8,

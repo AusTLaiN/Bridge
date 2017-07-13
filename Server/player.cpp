@@ -36,6 +36,7 @@ int Player::calculatePoints()
 void Player::takeCard(CardPtr card)
 {
     cards.append(card);
+    emit cardTaken(card);
 }
 
 void Player::skipTurn()

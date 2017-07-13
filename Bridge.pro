@@ -16,8 +16,6 @@ SOURCES += \
     Server/game.cpp \
     Server/Cards/card.cpp \
     Server/Cards/six.cpp \
-    Server/Actions/abstractaction.cpp \
-    Server/Actions/blockturn.cpp \
     Server/Cards/seven.cpp \
     Server/Cards/jack.cpp \
     Server/Cards/eight.cpp \
@@ -47,9 +45,7 @@ HEADERS += \
     Server/game.h \
     Server/Cards/card.h \
     Server/Cards/six.h \
-    Server/Actions/abstractaction.h \
     Server/Cards/cards.h \
-    Server/Actions/blockturn.h \
     Server/Cards/seven.h \
     Server/Cards/jack.h \
     Server/Cards/eight.h \

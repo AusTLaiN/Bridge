@@ -29,6 +29,7 @@ public:
     QString toString();
 
 signals:
+    void cardTaken(CardPtr card);
     void turnSkipped();
     void extraTurnGained();
 

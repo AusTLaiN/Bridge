@@ -28,6 +28,10 @@ int main(int argc, char *argv[])
         qcout << card << endl;
     }
 
+    Game game;
+
+    game.newRound();
+
     qcout.flush();
     return a.exec();
 }
