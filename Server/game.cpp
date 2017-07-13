@@ -1,39 +1,42 @@
 #include "game.h"
 
-#include "Server/deck.h"
-#include "Server/player.h"
-
 Game::Game(QObject *parent) :
     QObject(parent),
     active(-1),
-    deck(new Deck),
     state(NotStarted)
 {
+    connect(deck.data(), &Deck::noCardsLeft, [this]() {
+        for (int i = 0; i < CARDS_TO_REMOVE; ++i)
+        {
+            deck->moveToGraveyard(deck->lastPlayed());
+        }
 
+        deck->restore();
+        deck->shake();
+    });
 }
 
 Game::~Game()
 {
-    delete deck;
 }
 
 Game::GameStates Game::getState() { return state; }
 
-const QList<QSharedPointer<Player> > &Game::getPlayers() { return players; }
+const PlayersList &Game::getPlayers() { return players; }
 
-QSharedPointer<Player> Game::getActivePlayer()
+PlayerPtr Game::getActivePlayer()
 {
     return players[active];
 }
 
-QSharedPointer<Player> Game::getNextPlayer()
+PlayerPtr Game::getNextPlayer()
 {
     if (players[active] == players.last())
         return players.first();
     return players[active + 1];
 }
 
-Deck *Game::getDeck()
+DeckPtr Game::getDeck()
 {
     return deck;
 }
@@ -43,12 +46,12 @@ void Game::newRound()
 
 }
 
-void Game::join(Player *player)
+void Game::join(PlayerPtr player)
 {
 
 }
 
-void Game::leave(Player *player)
+void Game::leave(PlayerPtr player)
 {
 
 }

@@ -2,39 +2,42 @@
 #define DECK_H
 
 #include <QObject>
+#include <QSharedPointer>
 
 #include "Cards/cards.h"
+
+class Deck;
+
+typedef QSharedPointer<Deck> DeckPtr;
 
 class Deck : public QObject
 {
     Q_OBJECT
 
 public:
-    static const int CARDS_TO_REMOVE = 2;
-
-public:
     explicit Deck(QObject *parent = 0);
     ~Deck();
 
-    const Card::CardList &getRemaining();
-    const Card::CardList &getPlayed();
-    const Card::CardList &getGraveyard();
+    const CardList &getRemaining();
+    const CardList &getPlayed();
+    const CardList &getGraveyard();
 
     QStringList toStringList();
 
 signals:
-    void cardPlayed(Card *card);
+    void noCardsLeft();
 
 public slots:     
-    QSharedPointer<Card> lastPlayed();
-    QSharedPointer<Card> takeCard();
+    CardPtr lastPlayed();
+    CardPtr takeCard();
 
     // Adds card to remaining list
-    void addToDeck(Card *card);
+    void addToDeck(CardPtr card);
     // Adds card to played list
-    void addToPlayed(Card *card);
+    void addToPlayed(CardPtr card);
     // Moves card from played to graveyard
     void moveToGraveyard(int index);
+    void moveToGraveyard(CardPtr card);
 
     // Moves played cards back to remaining
     void restore();
@@ -42,10 +45,10 @@ public slots:
     void shake();
 
 protected:
-    Card::CardList remaining;
-    Card::CardList played;
+    CardList remaining;
+    CardList played;
     // Cards that are completely out of the game
-    Card::CardList graveyard;
+    CardList graveyard;
 };
 
 #endif // DECK_H

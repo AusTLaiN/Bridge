@@ -6,6 +6,12 @@
 #include <QDebug>
 
 class Game;
+class Card;
+
+typedef QSharedPointer<Card> CardPtr;
+typedef QScopedPointer<Card> CardPtrUnique;
+typedef QList<CardPtr> CardList;
+typedef QList<CardPtrUnique> CardListUnique;
 
 class Card : public QObject
 {
@@ -32,9 +38,6 @@ public:
         Ace = 14
     };
     Q_ENUM(Rank)
-
-    typedef QList<QSharedPointer<Card>> CardList;
-    typedef QList<QScopedPointer<Card>> CardListUnique;
 
     static int cardValue(Rank card_rank);
     static Rank cardRank(int numeric_rank);

@@ -3,13 +3,12 @@
 #include <QDebug>
 
 Player::Player(QObject *parent) :
-    QObject(parent),
-    cards(new Card::CardList)
+    QObject(parent)
 {
 
 }
 
-Card::CardList *Player::getCards() { return cards; }
+const CardList &Player::getCards() { return cards; }
 
 QString Player::getName() { return name; }
 
@@ -34,24 +33,26 @@ int Player::calculatePoints()
     qDebug("Player::calculatePoints");
 }
 
-void Player::addCard(Card *card)
+void Player::takeCard(CardPtr card)
 {
-    cards->append(QSharedPointer<Card>(card));
-}
-
-void Player::addCard(QSharedPointer<Card> card)
-{
-    cards->append(card);
+    cards.append(card);
 }
 
 void Player::skipTurn()
 {
     turns_blocked++;
+    emit turnSkipped();
+}
+
+void Player::takeExtraTurn()
+{
+    turns_blocked--;
+    emit extraTurnGained();
 }
 
 int Player::addPoints()
 {
-    for (auto card : *cards)
+    for (auto card : cards)
     {
         score += card.data()->getValue();
     }

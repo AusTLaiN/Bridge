@@ -2,10 +2,10 @@
 #define GAME_H
 
 #include <QObject>
+#include <QSharedPointer>
 
-class Card;
-class Deck;
-class Player;
+#include "Server/deck.h"
+#include "Server/player.h"
 
 class Game : public QObject
 {
@@ -22,6 +22,7 @@ public:
     static const int WIN_SCORE = 125;
     static const int PLAYERS_LIMIT = 5;
     static const int TURN_TIME_LIMIT = 90 * 1000;
+    static const int CARDS_TO_REMOVE = 2;
 
 public:
     explicit Game(QObject *parent = 0);
@@ -29,15 +30,15 @@ public:
 
     GameStates getState();
 
-    const QList<QSharedPointer<Player>> &getPlayers();
-    QSharedPointer<Player> getActivePlayer();
-    QSharedPointer<Player> getNextPlayer();
+    const PlayersList &getPlayers();
+    PlayerPtr getActivePlayer();
+    PlayerPtr getNextPlayer();
 
-    Deck *getDeck();
+    DeckPtr getDeck();
 
 signals:
-    void playerJoined(Player *player);
-    void playerLeft(Player *player);
+    void playerJoined(PlayerPtr player);
+    void playerLeft(PlayerPtr player);
 
     void gameStateChanged();
     void gameStarted();
@@ -47,14 +48,14 @@ public slots:
     void finish();
     void newRound();
 
-    void join(Player *player);
-    void leave(Player *player);
+    void join(PlayerPtr player);
+    void leave(PlayerPtr player);
 
     void start();
 
 protected:
-    Deck *deck;
-    QList<QSharedPointer<Player>> players;
+    DeckPtr deck;
+    PlayersList players;
     GameStates state;
     int active;
 };

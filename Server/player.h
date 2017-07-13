@@ -2,20 +2,23 @@
 #define PLAYER_H
 
 #include <QObject>
+#include <QSharedPointer>
 
 #include "Server/Cards/card.h"
+
+class Player;
+
+typedef QSharedPointer<Player> PlayerPtr;
+typedef QList<PlayerPtr> PlayersList;
 
 class Player : public QObject
 {
     Q_OBJECT
 
 public:
-    typedef QList<QSharedPointer<Player>> PlayersList;
-
-public:
     explicit Player(QObject *parent = 0);
 
-    Card::CardList *getCards();
+    const CardList &getCards();
     QString getName();
     QString getAddr();
     int getTurnsBlocked();
@@ -26,24 +29,25 @@ public:
     QString toString();
 
 signals:
-    void turnBlocked();
+    void turnSkipped();
+    void extraTurnGained();
 
 public slots:
     void setName(const QString &name);
     void setAddr(const QString &addr);
 
-    void addCard(Card *card);
-    void addCard(QSharedPointer<Card> card);
+    void takeCard(CardPtr card);
     void skipTurn();
+    void takeExtraTurn();
 
     int addPoints();
     int addPoints(int points);
 
 protected:
-    Card::CardList *cards;
-    int turns_blocked;
+    CardList cards;
     QString name;
     QString addr;
+    int turns_blocked;
     int score;
 };
 

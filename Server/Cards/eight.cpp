@@ -14,11 +14,11 @@ void Eight::action(Game *game)
 {
     Card::action(game);
 
-    Player *target = game->getNextPlayer().data();
-    Deck *deck = game->getDeck();
+    auto target = game->getNextPlayer();
+    auto deck = game->getDeck();
 
     qDebug() << "Target : " << target->toString();
 
     target->skipTurn();
-    target->addCard(deck->takeCard());
+    target->takeCard(deck->takeCard());
 }

@@ -11,15 +11,15 @@ Deck::Deck(QObject *parent) :
     {
         auto suit = static_cast<Card::Suit>(suits.value(i));
 
-        remaining.append(QSharedPointer<Card>(new Six(suit)));
-        remaining.append(QSharedPointer<Card>(new Seven(suit)));
-        remaining.append(QSharedPointer<Card>(new Eight(suit)));
-        remaining.append(QSharedPointer<Card>(new Nine(suit)));
-        remaining.append(QSharedPointer<Card>(new Ten(suit)));
-        remaining.append(QSharedPointer<Card>(new Jack(suit)));
-        remaining.append(QSharedPointer<Card>(new Queen(suit)));
-        remaining.append(QSharedPointer<Card>(new King(suit)));
-        remaining.append(QSharedPointer<Card>(new Ace(suit)));
+        remaining.append(CardPtr(new Six(suit)));
+        remaining.append(CardPtr(new Seven(suit)));
+        remaining.append(CardPtr(new Eight(suit)));
+        remaining.append(CardPtr(new Nine(suit)));
+        remaining.append(CardPtr(new Ten(suit)));
+        remaining.append(CardPtr(new Jack(suit)));
+        remaining.append(CardPtr(new Queen(suit)));
+        remaining.append(CardPtr(new King(suit)));
+        remaining.append(CardPtr(new Ace(suit)));
     }
 }
 
@@ -27,11 +27,11 @@ Deck::~Deck()
 {
 }
 
-const Card::CardList &Deck::getRemaining() { return remaining; }
+const CardList &Deck::getRemaining() { return remaining; }
 
-const Card::CardList &Deck::getPlayed() { return played; }
+const CardList &Deck::getPlayed() { return played; }
 
-const Card::CardList &Deck::getGraveyard() { return graveyard; }
+const CardList &Deck::getGraveyard() { return graveyard; }
 
 QStringList Deck::toStringList()
 {
@@ -45,40 +45,39 @@ QStringList Deck::toStringList()
     return list;
 }
 
-QSharedPointer<Card> Deck::lastPlayed()
+CardPtr Deck::lastPlayed()
 {
     return played.last();
 }
 
-QSharedPointer<Card> Deck::takeCard()
+CardPtr Deck::takeCard()
 {
     if (!remaining.empty())
         return remaining.takeFirst();
 
-    for (int i = 0; i < CARDS_TO_REMOVE; ++i)
-    {
-        moveToGraveyard(played.count() - 1);
-    }
-
-    remaining.append(played);
-    played.clear();
-    shake();
-    return takeCard();
+    emit noCardsLeft();
+    return CardPtr(nullptr);
 }
 
-void Deck::addToDeck(Card *card)
+void Deck::addToDeck(CardPtr card)
 {
-    remaining.append(QSharedPointer<Card>(card));
+    remaining.append(card);
 }
 
-void Deck::addToPlayed(Card *card)
+void Deck::addToPlayed(CardPtr card)
 {
-    played.append(QSharedPointer<Card>(card));
+    played.append(card);
 }
 
 void Deck::moveToGraveyard(int index)
 {
     auto card = played.takeAt(index);
+    graveyard.append(card);
+}
+
+void Deck::moveToGraveyard(CardPtr card)
+{
+    played.removeAll(card);
     graveyard.append(card);
 }
 
@@ -97,7 +96,7 @@ void Deck::shake()
     qDebug("Deck::shake");
     qDebug() << "Remaining count : " << remaining.count();
 
-    Card::CardList new_list;
+    CardList new_list;
 
     for (int i = remaining.count(); i > 0; --i)
     {
