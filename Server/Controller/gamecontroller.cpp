@@ -10,12 +10,16 @@ GameController::GameController()
 
 void GameController::service(HttpRequest& request, HttpResponse& response)
 {
-    response.setHeader("Content-Type", "text/html; charset=ISO-8859-1");
+    //response.setStatus(0);
+    response.setHeader("Content-Type", "application/json; text/javascript");
+    response.setHeader("Access-Control-Allow-Origin", "*");
 
     qDebug("ok");
     qDebug(request.getParameter("rank"));
     qDebug(request.getParameter("suit"));
-    response.write("ok", true);
+
+    response.write("{\"answer\":\"WellDone\"}", true);
+
 
     /*if (request.getParameter("action")=="show")
     {

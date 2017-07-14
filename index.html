@@ -6,8 +6,6 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>TestPage</title>
         <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script> 
-<!--        <link rel="stylesheet" href="main.css">-->
-
     </head>
     <body>
 
@@ -22,10 +20,6 @@
             $(document).ready(function(){
                 $("img").click(function(e){
                     var obj = $(this).data();
-                    //alert(obj.suit);
-                    //alert(obj.rank);
-                    var d = obj.suit + ";" + obj.rank;
-//                    
                     var parm1 = obj.rank;
                     var parm2 = obj.suit;
                     $.ajax({
@@ -34,32 +28,14 @@
                         data: {rank:parm1, suit:parm2},
                         dataType: 'json',
                         success: function(result){
-                            alert("ok");
-                            $("#res").html(result);
-                        }
+                            $('#res').html(result.answer);
+                        },
+                        error: function(result){
+                            $('#res').html(result);
+                        },
                     });
-                    //$("#res").html("ok");
                 });
             });
-        </script>
-        
-               
+        </script>               
     </body>
 </html>
-    
-<!--
-    <html>
-<body>
-<input type="button" value="Нажмите на меня" />
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
-<script>
-$(document).ready(function(){
-  
-   $("input").click(function(event){
-      alert("Поздравляем! Вы починили код!");
-   });
-
-});
-</script>
-</body>
-</html>-->
