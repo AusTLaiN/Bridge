@@ -19,7 +19,19 @@ QString searchConfigFile()
     QString fileName(appName+".ini");
 
     QStringList searchList;
-    searchList.append(binDir+"/../../");
+    //searchList.append(binDir);
+    searchList.append(binDir+"/../../dev");
+    searchList.append(binDir+"/../../branch_1");
+    /*searchList.append(binDir+"/etc");
+    searchList.append(binDir+"/../etc");
+    searchList.append(binDir+"/../../etc"); // for development without shadow build
+    searchList.append(binDir+"/../"+appName+"/etc"); // for development with shadow build
+    searchList.append(binDir+"/../../"+appName+"/etc"); // for development with shadow build
+    searchList.append(binDir+"/../../../"+appName+"/etc"); // for development with shadow build
+    searchList.append(binDir+"/../../../../"+appName+"/etc"); // for development with shadow build
+    searchList.append(binDir+"/../../../../../"+appName+"/etc"); // for development with shadow build
+    searchList.append(QDir::rootPath()+"etc/opt");
+    searchList.append(QDir::rootPath()+"etc");*/
 
     foreach (QString dir, searchList)
     {
