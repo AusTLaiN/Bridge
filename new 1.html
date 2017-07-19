@@ -1,0 +1,125 @@
+<html>
+<head>
+    <link href="css/style.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="wrapper">
+<!--	   <div class="crd" id="1"></div>-->
+<!--	   <div class="crd" id="2" style="left: 60px"></div>-->
+<!--	   <div class="crd" id="3" style="left: 120px"></div>-->
+<!--	   <div class="crd" style="left: 180px"></div>-->
+<!--	   <div class="crd" style="left: 240px"></div>-->
+    </div>
+    <script>
+            $(document).ready(function(){
+                const cardWidth = 60;
+                const cardHeight = 100;
+
+                jQuery.fn.rotate = function(degrees) {
+                    $(this).css({'transform' : 'rotate('+ degrees +'deg)'});
+                    return $(this);
+                };
+                
+                
+                // GLOBAL
+                var InHandArr = new Array();
+                var onTableArr = new Array();
+                
+                
+                var w = $(".wrapper").css("width");
+                var w2 = parseInt(w);
+                w2 /= 2;
+                w2 -= cardWidth/2;
+                var wCenter = w2;
+                alert(w2);
+                var h = $(".wrapper").css("height");
+                var h2 = parseInt(h);
+                h = h2 - cardHeight;
+                h2 /= 2;
+                h2 -= cardHeight/2;
+                  
+                var d;
+                for(var i = 0; i < 10; i++){
+                    d = $(".wrapper").append('<div class="crd">'+ i +'</div>');
+                    //$(d).rotate(Math.floor(15));
+                }
+                
+                /*for(var i = 0; i < onTableArr.length; i++) {
+                    $(onTableArr[i]).animate({left: wCenter, top: h2}, "slow", function(){ 
+                                            $(onTableArr[i]).rotate(Math.floor((Math.random() * 10) - 5)); //range -5 ... 5
+                                          });
+                }*/
+//                const cardWidth = parseInt($(".crd").css("width"));
+//                const cardHeight = parseInt($(".crd").css("height"));
+                // END GLOBAL
+                
+                
+            
+                $(window).resize(function(){
+                    w = $(".wrapper").css("width");
+                    w2 = parseInt(w);
+                    w2 /= 2;
+                    w2 -= cardWidth/2;
+                    wCenter = w2;
+                    h = $(".wrapper").css("height");
+                    h2 = parseInt(h);
+                    h = h2 - cardHeight;
+                    h2 /= 2;
+                    h2 -= cardHeight/2;
+                    var t = w2 - (cardWidth/2 * (InHandArr.length-1));
+                    if(InHandArr.length > 0) {
+                        for(var i = 0; i < InHandArr.length; i++){
+                            $(InHandArr[i]).animate({left: t, top: h}, "slow");
+                            t += cardWidth;
+                        }
+                        w2 = t - cardWidth;
+                    }
+                }); 
+                
+                $(".crd").click(function(){
+                    
+                    var addToHand = true;
+                    var PosInHand = 0;
+                    
+                    for(var i = 0; i < InHandArr.length; i++) {
+                        if(InHandArr[i] === this) {
+                            addToHand = false;
+                            PosInHand = i;
+                            break;
+                        }
+                    }
+                    if(addToHand){
+                        InHandArr.push(this);
+                        w2 += cardWidth/2;
+                        $(this).animate({left: w2, top: h}, "slow", function(){ 
+                                            $(this).rotate(0);
+                                        });
+                        if(InHandArr.length > 0) {
+                            for(var i = 0; i < InHandArr.length-1; i++){
+                                $(InHandArr[i]).animate({left: "-=30px"}, "slow");
+                            }
+                        }
+                    } 
+                    else {  // to table                      
+                        var IndexForDel = -1;
+                        $(this).animate({left: wCenter, top: h2}, "slow", function(){ 
+                                            $(this).rotate(Math.floor((Math.random() * 10) - 5)); //range -5 ... 5
+                                        });
+                        if(InHandArr.length > 0) {
+                            for(var i = 0; i < InHandArr.length; i++){
+                                if(i <= PosInHand)
+                                    $(InHandArr[i]).animate({left: "+=30px"}, "slow", function(){});
+                                else
+                                    $(InHandArr[i]).animate({left: "-=30px"}, "slow", function(){});
+                            }
+                        }
+                        InHandArr.splice(PosInHand,1);
+                        PosInHand = 0;
+                        w2 -= cardWidth/2;
+                    }
+                });
+            });
+    </script>
+</body>
+</html>

@@ -30,8 +30,8 @@
                         success: function(result){
                             $('#res').html(result.answer);
                         },
-                        error: function(result){
-                            $('#res').html(result);
+                        error: function(){
+                            $('#res').html("error");
                         },
                     });
                 });
