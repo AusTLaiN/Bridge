@@ -11,104 +11,125 @@
 <!--	   <div class="crd" style="left: 240px"></div>-->
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<!--    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>-->
-    <script src="https://cdn.rawgit.com/nnattawat/flip/master/dist/jquery.flip.min.js"></script>
     <script>
-            $(document).ready(function(){
-                
-                const cardWidth = 60;
-                const cardHeight = 100;
-                
-                jQuery.fn.flip = function(degrees, NeedRotate = false) {
-                    //$(this).css({'backface-visibility' : 'hidden'});
-                    var val;
-                    var rotateDegr = Math.floor((Math.random() * 10) - 5); //range -5 ... 5
-                    
-                    if(NeedRotate)
-                        val = 'rotate('+ rotateDegr +'deg) rotateY('+ degrees +'deg)';
-                    else
-                        val = 'rotate(0deg) rotateY('+ degrees +'deg)';
-                    
-                    $(this).css({'transform' : val});
-                    $(this).css({'transition' : 'transform 0.5s ease-out'});
-
-                    $(".crd").removeAttr('data-animated');
-                    return $(this);
-                };
-                
-                jQuery.fn.rotate = function(rotate=true) {
-                    var degrees = Math.floor((Math.random() * 10) - 5); //range -5 ... 5
-                    var t = $(this).css('transform');
-                    if(rotate)
-                        $(this).css({'transform' : 'rotate('+ degrees +'deg) ' + t});
-                    else
-                        $(this).css({'transform' : 'rotate(0deg)'});
-                    
-                    return $(this);
-                };
+            $(document).ready(function() {
                 
                 // GLOBAL
+                const CARD_WITH = 100;
+                const HF_CARD_WITH = CARD_WITH/2;
+                const CARD_HEIGHT = 182;
+                const HF_CARD_HEIGHT = CARD_HEIGHT/2;
+                //const EXACTLY = true;
+                const CRD_COND = {FACE_UP: 0, FACE_DOWN: 1};
+                
                 var InHandArr = new Array();
                 var onTableArr = new Array();
+                var CurZIndex = 0;
                 
+                jQuery.fn.flip = function(crdCond, exactly = true) {
+                    $(this).children('.crd-front').css({'backface-visibility' : 'hidden'});
+                    $(this).children('.crd-back').css({'backface-visibility' : 'hidden'});
+                    var valFrontSide = "";
+                    var valBackSide = "";
+                    var degFrontSide = "";
+                    var degBackSide = "";
+                    
+                    
+                    if(crdCond == CRD_COND.FACE_UP){
+                        degFrontSide = -180;
+                        degBackSide = 0;
+                    }
+                    else if(crdCond == CRD_COND.FACE_DOWN) {
+                        degFrontSide = 0;
+                        degBackSide = 180;
+                    }
+                    else {
+                        throw {
+                            message: "Flip: undefined card condition",
+                            code: 100
+                        };
+                    }
+                    
+                    if(!exactly) {
+                        var rotateDegr = Math.floor((Math.random() * 10) - 5); //range -5 ... 5
+                        valFrontSide = 'rotate('+ rotateDegr +'deg) rotateY('+ degFrontSide +'deg)';
+                        valBackSide = 'rotate('+ rotateDegr +'deg) rotateY('+ degBackSide +'deg)';
+                    }
+                    else {
+                        valFrontSide = 'rotate(0deg) rotateY('+ degFrontSide +'deg)';
+                        valBackSide = 'rotate(0deg) rotateY('+ degBackSide +'deg)';
+                    }
+
+                    $(this).children('.crd-front').css({transform : valFrontSide});
+                    $(this).children('.crd-front').css({transition : 'transform 0.5s ease-out'}); //TODO move this to css file
+                    $(this).children('.crd-back').css({transform : valBackSide});
+                    $(this).children('.crd-back').css({transition : 'transform 0.5s ease-out'}); //TODO move this to css file
+                    //$(".crd-container").removeAttr('data-animated');
+                    
+                    return $(this);
+                };
                 
+                // INIT
                 var w = $(document).width();
+                //alert(w);
                 var w2 = parseInt(w);
                 w2 /= 2;
-                w2 -= cardWidth/2;
+                w2 -= HF_CARD_WITH;
                 var wCenter = w2;
 
                 var h = $(document).height();
+                //alert(h);
                 var h2 = parseInt(h);
-                h = h2 - cardHeight - 10;
+                h = h2 - CARD_HEIGHT - 10;
                 h2 /= 2;
-                h2 -= cardHeight/2;
+                h2 -= HF_CARD_HEIGHT;
                
                 // initDeck
                 var d = $(".wrapper");
-                for(var i = 0; i < 36; i++){
-                    d.append('<div class="crd" id='+ parseInt(i+1) +'>'+ i +'</div>');
+                for(var i = 0; i < 36; i++) {
+                    d.append('<div class="crd-container" id='+ parseInt(i+1) +'><div class="crd-front">' + i + '</div><div class="crd-back">'+ i +'</div></div>');
                 }
                 
-                var tArr = d.children(".crd");
+                var tArr = d.children(".crd-container");
                 for(var i = 0; i < tArr.length; i++){
-                    $(tArr[i]).rotate();
+                    $(tArr[i]).flip(CRD_COND.FACE_DOWN, false);
                 }
+                // END_INIT
+                // END_GLOBAL
                 
-                // END GLOBAL
                 
-                
-                // onResize
+                // onResize()
                 $(window).resize(function(){
                     w = $(document).width();
+                    //alert(w);
                     w2 = parseInt(w);
                     w2 /= 2;
-                    w2 -= cardWidth/2;
+                    w2 -= HF_CARD_WITH;
                     wCenter = w2;
                     h = $(document).height();
+                    //alert(h);
                     h2 = parseInt(h);
-                    h = h2 - cardHeight - 10;
+                    h = h2 - CARD_HEIGHT - 10;
                     h2 /= 2;
-                    h2 -= cardHeight/2;
-                    var t = w2 - (cardWidth/2 * (InHandArr.length-1));
+                    h2 -= HF_CARD_HEIGHT;
+                    var t = w2 - (HF_CARD_WITH * (InHandArr.length-1));
                     if(InHandArr.length > 0) {
                         for(var i = 0; i < InHandArr.length; i++){
-                            $(InHandArr[i]).css({"left": t + 'px'});
-                            $(InHandArr[i]).css({"top": h + 'px'});
-                            //$(InHandArr[i]).animate({left: t, top: h}, "slow");
-                            t += cardWidth;
+                            $(InHandArr[i]).css({left: t + 'px'});
+                            $(InHandArr[i]).css({top: h + 'px'});
+                            t += CARD_WITH;
                         }
-                        w2 = t - cardWidth;
+                        w2 = t - CARD_WITH;
                     }
                 }); 
                 
-                // onCardClick
-                $(".crd").click(function(){
-                    if ($(".crd").attr('data-animated')) {
-                        return;
-                    };
+                // onCardClick(InHandArr:array, OnTable:array)
+                $(".crd-container").click(function() {
                     
-                    $(".crd").attr('data-animated', 'yes');
+                    if ($(".crd-container").attr('data-animated')) {
+                        return;
+                    };                    
+                    $(".crd-container").attr('data-animated', 'yes');
                     
                     var moveToHand = true;
                     var posInHand = 0;
@@ -120,40 +141,44 @@
                             break;
                         }
                     }
-                    if(moveToHand){ // move to player
+                    if(moveToHand) { // move to player
+                         $(this).css({'z-index' : CurZIndex++ });
                         InHandArr.push(this);
-                        w2 += cardWidth/2;
-                        $(this).animate({left: w2, top: h}, "slow", function(){ 
-                                            $(this).flip(-180, false);
+                        w2 += HF_CARD_WITH;
+                        $(this).children('.crd-front').css({'box-shadow': '4px 4px 5px rgba(0,0,0,.5)'});
+                        $(this).flip(CRD_COND.FACE_UP);
+                        $(this).animate({left: w2 + 'px', top: h + 'px'}, "slow", function() { 
+                                            $(".crd-container").removeAttr('data-animated');
                                         });
                         if(InHandArr.length > 0) {
                             for(var i = 0; i < InHandArr.length-1; i++){
-                                $(InHandArr[i]).animate({left: "-=30px"}, "medium");
+                                $(InHandArr[i]).animate({left: '-=' + HF_CARD_WITH + 'px'}, "medium");
                             }
                         }
                     } 
                     else {  // move to table     
-                        w2 -= cardWidth/2;
+                        w2 -= HF_CARD_WITH;
+                        $(this).css({'z-index' : CurZIndex++ });
                         
-                        $(this).animate({top: h-30}, "fast", function(){
-                                            $(this).rotate();
-                                            $(this).animate({left: wCenter, top: h2}, "slow", function(){
-                                                $(".crd").removeAttr('data-animated');
+                        $(this).animate({top: h-30 + 'px'}, "fast", function() {
+                                            $(this).flip(CRD_COND.FACE_UP, false);
+                                            $(this).animate({left: wCenter + 'px', top: h2 + 'px'}, 'slow', function() {
+                                                $(".crd-container").removeAttr('data-animated');
                                             });
                                         });
                         
                         if(InHandArr.length > 0) {
                             for(var i = 0; i < InHandArr.length; i++){
                                 if(i <= posInHand) {
-                                    $(InHandArr[i]).animate({"left": "+=30px"}, "slow", function(){});
+                                    $(InHandArr[i]).animate({"left": '+=' + HF_CARD_WITH + 'px'}, 'slow'/*, function(){}*/);
                                 }
                                 else {
 
-                                    $(InHandArr[i]).animate({"left": "-=30px"}, "slow", function(){});
+                                    $(InHandArr[i]).animate({"left": '-=' + HF_CARD_WITH + 'px'}, 'slow'/*, function(){}*/);
                                 }
                             }
                         }
-                        InHandArr.splice(posInHand,1);
+                        InHandArr.splice(posInHand, 1);
                         posInHand = 0;
                     }
                 });
