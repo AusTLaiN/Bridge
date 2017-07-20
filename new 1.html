@@ -4,31 +4,84 @@
 </head>
 <body>
     <div class="wrapper">
-<!--	   <div class="crd" id="1"></div>-->
-<!--	   <div class="crd" id="2" style="left: 60px"></div>-->
-<!--	   <div class="crd" id="3" style="left: 120px"></div>-->
-<!--	   <div class="crd" style="left: 180px"></div>-->
-<!--	   <div class="crd" style="left: 240px"></div>-->
+        <div class="shake-btn" style="border: 1px solid black; width: 100px; cursor: pointer">ClickToShake</div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script>
             $(document).ready(function() {
                 
                 // GLOBAL
-                const CARD_WITH = 100;
+                const CARD_WITH = 132 + 2; //2px - border
                 const HF_CARD_WITH = CARD_WITH/2;
                 const CARD_HEIGHT = 182;
                 const HF_CARD_HEIGHT = CARD_HEIGHT/2;
-                //const EXACTLY = true;
                 const CRD_COND = {FACE_UP: 0, FACE_DOWN: 1};
+                const ANIMATE_DIR = {LEFT: 0, UP: 1, RIGHT: 2};
                 
-                var InHandArr = new Array();
-                var onTableArr = new Array();
+                var InHandArr = [];
+                var onTableArr = [];
                 var CurZIndex = 0;
                 
+                jQuery.fn.animateMoveCardToPlayer = function(direction) { // --- need definition ---
+                    switch(direction)
+                    {
+                        case ANIMATE_DIR.LEFT:
+                            break;
+                        case ANIMATE_DIR.UP:
+                            break;
+                        case ANIMATE_DIR.RIGHT:
+                            break;
+                        default:
+                            throw {
+                                message: 'animateToPlayer: undefined animation direction',
+                                code: 100
+                            };
+                    }
+                };
+                
+                function animateDeckShake(cardArr){
+                    var PropArr = [];
+                    for(var i = 0; i < cardArr.length; i++) {
+                        PropArr.push({left: $(cardArr[i]).css('left'), top: $(cardArr[i]).css('top')});
+                    }
+                    for(var i = 3; i; i--) {
+                        for(var j = 0; j < cardArr.length; j++) {
+                            var offsetX = Math.floor((Math.random() * 250) - 125);
+                            var offsetY = Math.floor((Math.random() * 250) - 125);
+                            $(cardArr[j]).animate({left: '-=' +offsetX+'px', top: '-=' +offsetY+'px'}, 300, function(){});
+                            //$(cardArr[j]).animate({left: '-=' +offsetX+'px', top: '-=' +offsetY+'px'}, 300);
+                        }
+                    }
+                    for(var i = 0; i < cardArr.length; i++) {
+                        
+                        $(cardArr[i]).animate({left : PropArr[i].left, top : PropArr[i].top}, "500", function(){});
+                    }
+                }; //--- need definition ---
+                function animateCardSort(cardArr){}; //--- need definition ---
+                
+                function lockAllCard(){
+                    $(".crd-container").attr('data-locked', 'true');
+                };              
+                function unlockAllCard(){
+                    $(".crd-container").attr('data-locked', 'false');
+                };
+                
+                jQuery.fn.lock = function(selector) {
+                    $(selector).attr('data-locked', 'true');
+                }
+                jQuery.fn.unlock = function(selector) {
+                    $(selector).attr('data-locked', 'false');
+                }
+                jQuery.fn.isLocked = function() {
+                    if($(this).attr('data-locked') == 'true')
+                        return true;  
+                    
+                    return false;
+                };              
+                jQuery.fn.setCard = function(cardId) {
+                    $(this).css({'background-image' : 'url(img/' + cardId + '.svg)'});
+                };            
                 jQuery.fn.flip = function(crdCond, exactly = true) {
-                    $(this).children('.crd-front').css({'backface-visibility' : 'hidden'});
-                    $(this).children('.crd-back').css({'backface-visibility' : 'hidden'});
                     var valFrontSide = "";
                     var valBackSide = "";
                     var degFrontSide = "";
@@ -40,12 +93,13 @@
                         degBackSide = 0;
                     }
                     else if(crdCond == CRD_COND.FACE_DOWN) {
+                        //alert("@");
                         degFrontSide = 0;
-                        degBackSide = 180;
+                        degBackSide = -180;
                     }
                     else {
                         throw {
-                            message: "Flip: undefined card condition",
+                            message: "flip: undefined card condition",
                             code: 100
                         };
                     }
@@ -64,7 +118,6 @@
                     $(this).children('.crd-front').css({transition : 'transform 0.5s ease-out'}); //TODO move this to css file
                     $(this).children('.crd-back').css({transform : valBackSide});
                     $(this).children('.crd-back').css({transition : 'transform 0.5s ease-out'}); //TODO move this to css file
-                    //$(".crd-container").removeAttr('data-animated');
                     
                     return $(this);
                 };
@@ -74,7 +127,7 @@
                 //alert(w);
                 var w2 = parseInt(w);
                 w2 /= 2;
-                w2 -= HF_CARD_WITH;
+                w2 -= CARD_WITH;
                 var wCenter = w2;
 
                 var h = $(document).height();
@@ -93,18 +146,19 @@
                 var tArr = d.children(".crd-container");
                 for(var i = 0; i < tArr.length; i++){
                     $(tArr[i]).flip(CRD_COND.FACE_DOWN, false);
+                    $(tArr[i]).children('.crd-back').setCard(i+1);
                 }
                 // END_INIT
                 // END_GLOBAL
                 
                 
-                // onResize()
-                $(window).resize(function(){
+                // onResize() // still worked bad
+                $(window).resize(function(){ 
                     w = $(document).width();
                     //alert(w);
                     w2 = parseInt(w);
                     w2 /= 2;
-                    w2 -= HF_CARD_WITH;
+                    w2 -= CARD_WITH;
                     wCenter = w2;
                     h = $(document).height();
                     //alert(h);
@@ -123,13 +177,17 @@
                     }
                 }); 
                 
+                $('.shake-btn').click(function(){
+                        animateDeckShake($('.wrapper').children('.crd-container'));
+                });
+                
                 // onCardClick(InHandArr:array, OnTable:array)
-                $(".crd-container").click(function() {
+                $('.crd-container').click(function() {
                     
-                    if ($(".crd-container").attr('data-animated')) {
+                    if ($(this).isLocked()) {
                         return;
                     };                    
-                    $(".crd-container").attr('data-animated', 'yes');
+                    lockAllCard();
                     
                     var moveToHand = true;
                     var posInHand = 0;
@@ -147,12 +205,12 @@
                         w2 += HF_CARD_WITH;
                         $(this).children('.crd-front').css({'box-shadow': '4px 4px 5px rgba(0,0,0,.5)'});
                         $(this).flip(CRD_COND.FACE_UP);
-                        $(this).animate({left: w2 + 'px', top: h + 'px'}, "slow", function() { 
-                                            $(".crd-container").removeAttr('data-animated');
+                        $(this).animate({left: w2 + 'px', top: h + 'px'}, 'slow', function() { 
+                                            unlockAllCard();
                                         });
                         if(InHandArr.length > 0) {
                             for(var i = 0; i < InHandArr.length-1; i++){
-                                $(InHandArr[i]).animate({left: '-=' + HF_CARD_WITH + 'px'}, "medium");
+                                $(InHandArr[i]).animate({left: '-=' + HF_CARD_WITH + 'px'}, 'medium');
                             }
                         }
                     } 
@@ -160,10 +218,10 @@
                         w2 -= HF_CARD_WITH;
                         $(this).css({'z-index' : CurZIndex++ });
                         
-                        $(this).animate({top: h-30 + 'px'}, "fast", function() {
+                        $(this).animate({top: h-30 + 'px'}, 'fast', function() {
                                             $(this).flip(CRD_COND.FACE_UP, false);
                                             $(this).animate({left: wCenter + 'px', top: h2 + 'px'}, 'slow', function() {
-                                                $(".crd-container").removeAttr('data-animated');
+                                                unlockAllCard();
                                             });
                                         });
                         

@@ -13,7 +13,7 @@ body {
     top: 20%;   /*TODO move to JS onInit*/
     left: 40%;  /*TODO move to JS onInit*/
 /*	border: 1px solid red;*/
-    transform: rotate(0);
+/*    transform: rotate(0);*/
     transition : 'transform 0.5s ease-out';
 }
 
@@ -27,6 +27,7 @@ body {
 	height: 182px;
     backface-visibility : hidden;
     border-radius: 20px;
+    text-align: center;
 }
 
 .crd-back {
@@ -34,11 +35,12 @@ body {
     border: 1px solid #e2e0e0;
     top: 0;
     left: 0;
-    background: transparent url(../img/white_deck_jack_of_hearts.svg) -3px -3px no-repeat ;
+    background: transparent -3px -3px no-repeat ;
 	width: 132px;
 	height: 182px;
     backface-visibility : hidden;
     transform: rotateY(-180deg);
     border-radius: 20px;
     box-shadow: 4px 4px 5px rgba(0,0,0,.5);
+    text-align: center;
 }
