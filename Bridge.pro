@@ -23,7 +23,8 @@ SOURCES += \
     Server/Cards/ten.cpp \
     Server/Cards/queen.cpp \
     Server/Cards/king.cpp \
-    Server/Cards/ace.cpp
+    Server/Cards/ace.cpp \
+    Server/Cards/actionargs.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -53,5 +54,10 @@ HEADERS += \
     Server/Cards/ten.h \
     Server/Cards/queen.h \
     Server/Cards/king.h \
-    Server/Cards/ace.h
+    Server/Cards/ace.h \
+    Server/actionargs.h \
+    Server/global.h
 
+
+INCLUDEPATH += \
+        $$PWD/Server

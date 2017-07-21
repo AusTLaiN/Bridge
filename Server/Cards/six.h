@@ -3,7 +3,10 @@
 
 #include <QObject>
 
+#include "global.h"
 #include "card.h"
+
+namespace bridge_game {
 
 class Six : public Card
 {
@@ -14,5 +17,9 @@ public:
 
 public slots:
 };
+
+}
+
+
 
 #endif // SIX_H

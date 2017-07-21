@@ -2,8 +2,14 @@
 
 #include <QDebug>
 
+using namespace bridge_game;
+
 Player::Player(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    turns_blocked(0),
+    score(0),
+    name("Unknown"),
+    addr("NoAddress")
 {
 
 }
@@ -18,7 +24,11 @@ int Player::getScore() { return score; }
 
 QString Player::toString()
 {
-    return QString("Player(Name=%1,Address=%2)").arg(name, addr);
+    auto str_turns = QString::number(turns_blocked);
+    auto str_score = QString::number(score);
+
+    return QString("Player(Name=%1, Address=%2, "
+                   "TurnsBlocked=%3, Score=%4)").arg(name, addr, str_turns, str_score);
 }
 
 int Player::getTurnsBlocked() { return turns_blocked; }

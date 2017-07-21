@@ -3,7 +3,10 @@
 
 #include <QObject>
 
+#include "global.h"
 #include "card.h"
+
+namespace bridge_game {
 
 class Eight : public Card
 {
@@ -13,7 +16,9 @@ public:
     explicit Eight(Suit suit, QObject *parent = 0);
 
 public slots:
-    virtual void action(Game *game) override;
+    virtual void action(ActionArgs args) override;
 };
+
+}
 
 #endif // EIGHT_H

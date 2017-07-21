@@ -2,14 +2,11 @@
 #define PLAYER_H
 
 #include <QObject>
-#include <QSharedPointer>
 
-#include "Server/Cards/card.h"
+#include "global.h"
+#include "Cards/card.h"
 
-class Player;
-
-typedef QSharedPointer<Player> PlayerPtr;
-typedef QList<PlayerPtr> PlayersList;
+namespace bridge_game {
 
 class Player : public QObject
 {
@@ -51,5 +48,8 @@ protected:
     int turns_blocked;
     int score;
 };
+
+} // bridge_game
+
 
 #endif // PLAYER_H
