@@ -2,10 +2,12 @@
 #define GAME_H
 
 #include <QObject>
-#include <QSharedPointer>
 
-#include "Server/deck.h"
-#include "Server/player.h"
+#include "global.h"
+#include "deck.h"
+#include "player.h"
+
+namespace bridge_game {
 
 class Game : public QObject
 {
@@ -31,6 +33,7 @@ public:
     GameStates getState();
 
     const PlayersList &getPlayers();
+    PlayerPtr getPlayer(int index);
     PlayerPtr getActivePlayer();
     PlayerPtr getNextPlayer();
 
@@ -43,6 +46,10 @@ signals:
     void playerTakenCard(PlayerPtr player, CardPtr card);
     void playerSkippedTurn(PlayerPtr player);
     void playerTakenExtraTurn(PlayerPtr player);
+    void activeSuitChanged(Card::Suit suit);
+
+    void activePlayerChanged(PlayerPtr player);
+    void activePlayerChanged(int index);
 
     void gameStateChanged(GameStates state);
     void gameStarted();
@@ -56,6 +63,12 @@ public slots:
     void leave(PlayerPtr player);
 
     void takeCard(PlayerPtr target);
+    void skipTurn(PlayerPtr target);
+    void extraTurn(PlayerPtr target);
+    void setActiveSuit(Card::Suit suit);
+
+    void setActivePlayer(int index);
+    void setActivePlayer(PlayerPtr player);
 
     void start();
     void pause();
@@ -68,7 +81,10 @@ protected:
     PlayersList players;
     GameStates state;
     int active;
+    Card::Suit current_suit;
 };
+
+} // bridge_game
 
 
 #endif // GAME_H

@@ -1,8 +1,10 @@
 #include "card.h"
-
-#include "Server/game.h"
+#include "game.h"
+#include "actionargs.h"
 
 #include <QMetaEnum>
+
+using namespace bridge_game;
 
 // Static functions
 
@@ -23,9 +25,9 @@ int Card::cardValue(Card::Rank card_rank)
         return 10;
     case Ace:
         return 15;
+    default:
+        return -1;
     }
-
-    return -1;
 }
 
 Card::Rank Card::cardRank(int numeric_rank)
@@ -81,8 +83,8 @@ QString Card::toString()
     return cardName(getRank(), getSuit());
 }
 
-void Card::action(Game *game)
+void Card::action(ActionArgs args)
 {
     qDebug("Card::action:");
-    qDebug() << this->toString();
+    qDebug() << args.toString();
 }

@@ -1,8 +1,7 @@
 #include "eight.h"
+#include "game.h"
 
-#include "Server/game.h"
-#include "Server/player.h"
-#include "Server/deck.h"
+using namespace bridge_game;
 
 Eight::Eight(Suit suit, QObject *parent) :
     Card(Card::Eight, suit, parent)
@@ -10,14 +9,12 @@ Eight::Eight(Suit suit, QObject *parent) :
 
 }
 
-void Eight::action(Game *game)
+void Eight::action(ActionArgs args)
 {
-    Card::action(game);
+    Card::action(args);
 
-    auto target = game->getNextPlayer();
-    auto deck = game->getDeck();
-
-    qDebug() << "Target : " << target->toString();
+    auto target = args.target;
+    auto deck = args.game->getDeck();
 
     target->skipTurn();
     target->takeCard(deck->takeCard());

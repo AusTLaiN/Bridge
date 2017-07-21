@@ -2,8 +2,11 @@
 #include <QMetaEnum>
 #include <QTextStream>
 
-#include "Server/game.h"
-#include "Server/deck.h"
+#include "game.h"
+#include "deck.h"
+#include "actionargs.h"
+
+using namespace bridge_game;
 
 int main(int argc, char *argv[])
 {
@@ -21,7 +24,7 @@ int main(int argc, char *argv[])
         qcout << card << endl;
     }
 
-    deck.shake();
+    deck.shuffle();
 
     for (QString& card : deck.toStringList())
     {
@@ -31,6 +34,13 @@ int main(int argc, char *argv[])
     Game game;
 
     game.newRound();
+
+    ActionArgs args;
+    args.owner = PlayerPtr(new Player());
+    args.target = PlayerPtr(new Player());
+    args.card = deck.takeCard();
+
+    qcout << args.toString();
 
     qcout.flush();
 

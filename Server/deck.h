@@ -2,13 +2,11 @@
 #define DECK_H
 
 #include <QObject>
-#include <QSharedPointer>
 
+#include "global.h"
 #include "Cards/cards.h"
 
-class Deck;
-
-typedef QSharedPointer<Deck> DeckPtr;
+namespace bridge_game {
 
 class Deck : public QObject
 {
@@ -27,7 +25,7 @@ public:
 signals:
     void noCardsLeft();
 
-public slots:     
+public slots:
     CardPtr lastPlayed();
     CardPtr takeCard();
 
@@ -42,7 +40,7 @@ public slots:
     // Moves played cards back to remaining
     void restore();
     // Shuffles deck
-    void shake();
+    void shuffle();
 
 protected:
     CardList remaining;
@@ -50,5 +48,8 @@ protected:
     // Cards that are completely out of the game
     CardList graveyard;
 };
+
+} // bridge_game
+
 
 #endif // DECK_H

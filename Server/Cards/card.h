@@ -2,16 +2,12 @@
 #define CARD_H
 
 #include <QObject>
-#include <QSharedPointer>
 #include <QDebug>
 
-class Game;
-class Card;
+#include "global.h"
+#include "actionargs.h"
 
-typedef QSharedPointer<Card> CardPtr;
-typedef QScopedPointer<Card> CardPtrUnique;
-typedef QList<CardPtr> CardList;
-typedef QList<CardPtrUnique> CardListUnique;
+namespace bridge_game {
 
 class Card : public QObject
 {
@@ -20,7 +16,9 @@ class Card : public QObject
 public:
     enum Suit {
         UndefinedSuit = 0,
-        Clubs,
+        AnySuit = 100,
+
+        Clubs = 1,
         Diamonds,
         Hearts,
         Spades
@@ -29,6 +27,8 @@ public:
 
     enum Rank {
         UndefinedRank = 0,
+        AnyRank = 100,
+
         Six = 6,
         Seven = 7,
         Eight = 8,
@@ -65,13 +65,15 @@ public slots:
     void setSuit(Suit suit);
     void setRank(Rank rank);
 
-    virtual void action(Game* game);
+    virtual void action(ActionArgs args);
 
 protected:
     bool _playable;
     int _value;
     Rank _rank;
     Suit _suit;
-};
+}; // Card
+
+} // bridge_game
 
 #endif // CARD_H

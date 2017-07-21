@@ -5,12 +5,12 @@
 
 #include "card.h"
 
-class Ten : public Card
+/*class Ten : public Card
 {
     Q_OBJECT
 
 public:
     explicit Ten(Suit suit, QObject *parent = 0);
-};
+};*/
 
 #endif // TEN_H

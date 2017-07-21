@@ -2,6 +2,8 @@
 
 #include <QMetaEnum>
 
+using namespace bridge_game;
+
 Deck::Deck(QObject *parent) :
     QObject(parent)
 {
@@ -12,14 +14,14 @@ Deck::Deck(QObject *parent) :
         auto suit = static_cast<Card::Suit>(suits.value(i));
 
         remaining.append(CardPtr(new Six(suit)));
-        remaining.append(CardPtr(new Seven(suit)));
+        //remaining.append(CardPtr(new Seven(suit)));
         remaining.append(CardPtr(new Eight(suit)));
-        remaining.append(CardPtr(new Nine(suit)));
-        remaining.append(CardPtr(new Ten(suit)));
+        //remaining.append(CardPtr(new Nine(suit)));
+        //remaining.append(CardPtr(new Ten(suit)));
         remaining.append(CardPtr(new Jack(suit)));
-        remaining.append(CardPtr(new Queen(suit)));
-        remaining.append(CardPtr(new King(suit)));
-        remaining.append(CardPtr(new Ace(suit)));
+        //remaining.append(CardPtr(new Queen(suit)));
+        //remaining.append(CardPtr(new King(suit)));
+        //remaining.append(CardPtr(new Ace(suit)));
     }
 }
 
@@ -91,7 +93,7 @@ void Deck::restore()
     played.clear();
 }
 
-void Deck::shake()
+void Deck::shuffle()
 {
     qDebug("Deck::shake");
     qDebug() << "Remaining count : " << remaining.count();
