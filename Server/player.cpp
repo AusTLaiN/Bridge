@@ -31,6 +31,7 @@ void Player::setAddr(const QString &addr) { this->addr = addr; }
 int Player::calculatePoints()
 {
     qDebug("Player::calculatePoints");
+    return 0;
 }
 
 void Player::takeCard(CardPtr card)
