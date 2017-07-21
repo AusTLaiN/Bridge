@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    QTextStream qcin(stdin);
+    //QTextStream qcin(stdin);
     QTextStream qcout(stdout);
 
     qcout << "Server started" << endl;
@@ -43,5 +43,6 @@ int main(int argc, char *argv[])
     qcout << args.toString();
 
     qcout.flush();
+
     return a.exec();
 }
