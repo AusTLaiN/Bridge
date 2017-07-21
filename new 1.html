@@ -15,13 +15,15 @@
                 const HF_CARD_WITH = CARD_WITH/2;
                 const CARD_HEIGHT = 182;
                 const HF_CARD_HEIGHT = CARD_HEIGHT/2;
-                const CRD_COND = {FACE_UP: 0, FACE_DOWN: 1};
+                const CRD_COND = {FACE_UP: 0, FACE_DOWN: 1, FULL_TURN: 3};
                 const ANIMATE_DIR = {LEFT: 0, UP: 1, RIGHT: 2};
                 
                 var InHandArr = [];
                 var onTableArr = [];
                 var CurZIndex = 0;
                 
+                /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+                function animateCardSort(cardArr){}; //--- need definition ---
                 jQuery.fn.animateMoveCardToPlayer = function(direction) { // --- need definition ---
                     switch(direction)
                     {
@@ -38,8 +40,53 @@
                             };
                     }
                 };
+                /*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+                
+                function getDegreeElement(element){
+
+                    var valueStyle = $(element).css('transform');
+                    if(valueStyle == 'none') 
+                        return 0;
+
+                    //console.log(valueStyle);
+                    var values = valueStyle.split('(')[1];
+                    values = values.split(')')[0];
+                    values = values.split(',');
+
+                    var cos = values[0];
+                    var sin = values[1];
+
+                    var degree = Math.round(Math.asin(sin) * (180/Math.PI));
+                    if(cos<0){
+                        addDegree = 90 - Math.round(Math.asin(sin) * (180/Math.PI));
+                        degree = 90 + addDegree;
+                    }
+                    if(degree < 0){
+                        degree = 360 + degree;
+                    }
+                    return degree;
+                }
+                
+                function resetPos(cardArr) {
+                    var tArr = [];
+                    for(var i = 0; i < cardArr.length; i++) {
+                        tArr.push({
+                            front: getDegreeElement($(cardArr[i]).children('.crd-front')), 
+                            back: getDegreeElement($(cardArr[i]).children('.crd-back'))
+                        });
+                    }
+                    for(var i = 0; i < cardArr.length; i++) {
+                        //$(cardArr[i]).css({transform : 'rotate(0deg)'});
+                        //$(cardArr[i]).css({transition: 'none'});
+                        $(cardArr[i]).children('.crd-front').css({transform: 'rotate('+tArr[i].front+'deg) rotateY(0)'});
+                        $(cardArr[i]).children('.crd-back').css({transform: 'rotate('+tArr[i].back+'deg) rotateY(-180deg)'});
+                        $(cardArr[i]).children('.crd-front').css({transition: 'none'});
+                        $(cardArr[i]).children('.crd-back').css({transition: 'none'});
+                    } 
+                }
                 
                 function animateDeckShake(cardArr){
+                    resetPos(cardArr);
                     var PropArr = [];
                     for(var i = 0; i < cardArr.length; i++) {
                         PropArr.push({left: $(cardArr[i]).css('left'), top: $(cardArr[i]).css('top')});
@@ -48,16 +95,16 @@
                         for(var j = 0; j < cardArr.length; j++) {
                             var offsetX = Math.floor((Math.random() * 250) - 125);
                             var offsetY = Math.floor((Math.random() * 250) - 125);
+                            $(cardArr[j]).flip(CRD_COND.FULL_TURN, false);
                             $(cardArr[j]).animate({left: '-=' +offsetX+'px', top: '-=' +offsetY+'px'}, 300, function(){});
-                            //$(cardArr[j]).animate({left: '-=' +offsetX+'px', top: '-=' +offsetY+'px'}, 300);
                         }
                     }
                     for(var i = 0; i < cardArr.length; i++) {
-                        
                         $(cardArr[i]).animate({left : PropArr[i].left, top : PropArr[i].top}, "500", function(){});
                     }
-                }; //--- need definition ---
-                function animateCardSort(cardArr){}; //--- need definition ---
+                    setTimeout(resetPos, 1200, cardArr);
+                    
+                };
                 
                 function lockAllCard(){
                     $(".crd-container").attr('data-locked', 'true');
@@ -86,16 +133,28 @@
                     var valBackSide = "";
                     var degFrontSide = "";
                     var degBackSide = "";
-                    
+                    var transformVal = '0';
                     
                     if(crdCond == CRD_COND.FACE_UP){
                         degFrontSide = -180;
                         degBackSide = 0;
+                        $(this).children('.crd-back').css({transition : 'transform .5s ease-out'});
+                        $(this).children('.crd-front').css({transition : 'transform .5s ease-out'});
                     }
                     else if(crdCond == CRD_COND.FACE_DOWN) {
                         //alert("@");
                         degFrontSide = 0;
                         degBackSide = -180;
+                        $(this).children('.crd-back').css({transition : 'transform .5s ease-out'}); 
+                        $(this).children('.crd-front').css({transition : 'transform .5s ease-out'}); 
+                    }
+                    else if(crdCond == CRD_COND.FULL_TURN) {
+                        //$(this).css({transition : 'transform 1.5s ease-out'});
+                        //$(this).css({transform : 'rotate(360deg)'});
+                        $(this).children('.crd-back').css({transition : 'transform 1.5s ease-out'});
+                        $(this).children('.crd-front').css({transition : 'transform 1.5s ease-out'});
+                        degFrontSide = 360;
+                        degBackSide = 180;
                     }
                     else {
                         throw {
@@ -114,10 +173,8 @@
                         valBackSide = 'rotate(0deg) rotateY('+ degBackSide +'deg)';
                     }
 
-                    $(this).children('.crd-front').css({transform : valFrontSide});
-                    $(this).children('.crd-front').css({transition : 'transform 0.5s ease-out'}); //TODO move this to css file
+                    $(this).children('.crd-front').css({transform : valFrontSide});                    
                     $(this).children('.crd-back').css({transform : valBackSide});
-                    $(this).children('.crd-back').css({transition : 'transform 0.5s ease-out'}); //TODO move this to css file
                     
                     return $(this);
                 };
@@ -148,6 +205,7 @@
                     $(tArr[i]).flip(CRD_COND.FACE_DOWN, false);
                     $(tArr[i]).children('.crd-back').setCard(i+1);
                 }
+                animateDeckShake(tArr);
                 // END_INIT
                 // END_GLOBAL
                 
@@ -177,8 +235,9 @@
                     }
                 }); 
                 
+          
                 $('.shake-btn').click(function(){
-                        animateDeckShake($('.wrapper').children('.crd-container'));
+                    animateDeckShake($('.wrapper').children('.crd-container'));
                 });
                 
                 // onCardClick(InHandArr:array, OnTable:array)
