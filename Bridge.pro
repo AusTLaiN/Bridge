@@ -1,4 +1,4 @@
-QT += core
+QT += core websockets
 QT -= gui
 
 CONFIG += c++11
@@ -24,6 +24,7 @@ SOURCES += \
     Server/game.cpp \
     Server/main.cpp \
     Server/player.cpp \
+    Server/server.cpp \
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -54,3 +55,6 @@ HEADERS += \
     Server/deck.h \
     Server/game.h \
     Server/player.h \
+    Server/server.h \
+
+CLIENT += chatclient.html
