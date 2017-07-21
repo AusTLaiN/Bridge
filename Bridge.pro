@@ -10,7 +10,6 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += \
-    Server/requestmapper.cpp \
     Server/Cards/ace.cpp \
     Server/Cards/card.cpp \
     Server/Cards/eight.cpp \
@@ -25,7 +24,6 @@ SOURCES += \
     Server/game.cpp \
     Server/main.cpp \
     Server/player.cpp \
-    Server/Controller/gamecontroller.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -39,12 +37,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 DISTFILES += \
-    .gitignore \
-    etc/docroot/Schmetterling klein.png \
-    etc/docroot/index.html
+    .gitignore
 
 HEADERS += \
-    Server/requestmapper.h \
     Server/Cards/ace.h \
     Server/Cards/card.h \
     Server/Cards/cards.h \
@@ -59,7 +54,3 @@ HEADERS += \
     Server/deck.h \
     Server/game.h \
     Server/player.h \
-    Server/Controller/gamecontroller.h
-
-
-include(httpserver/httpserver.pri)

@@ -93,8 +93,8 @@
                     }
                     for(var i = 3; i; i--) {
                         for(var j = 0; j < cardArr.length; j++) {
-                            var offsetX = Math.floor((Math.random() * 250) - 125);
-                            var offsetY = Math.floor((Math.random() * 250) - 125);
+                            var offsetX = Math.floor((Math.random() * 100) - 50);
+                            var offsetY = Math.floor((Math.random() * 100) - 50);
                             $(cardArr[j]).flip(CRD_COND.FULL_TURN, false);
                             $(cardArr[j]).animate({left: '-=' +offsetX+'px', top: '-=' +offsetY+'px'}, 300, function(){});
                         }
