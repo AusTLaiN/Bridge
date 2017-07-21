@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include "global.h"
-#include "Cards/card.h"
+#include "card.h"
 
 namespace bridge_game {
 
