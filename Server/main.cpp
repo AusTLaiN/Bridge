@@ -4,7 +4,6 @@
 
 #include "Server/game.h"
 #include "Server/deck.h"
-#include "Server/server.h"
 
 int main(int argc, char *argv[])
 {
@@ -34,8 +33,6 @@ int main(int argc, char *argv[])
     game.newRound();
 
     qcout.flush();
-
-    Server server(8080);
 
     return a.exec();
 }
