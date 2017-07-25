@@ -2,11 +2,12 @@
 
 using namespace bridge_game;
 
-Game::Game(QObject *parent) :
+Game::Game(int id, QObject *parent) :
     QObject(parent),
-    active(-1),
-    state(NotStarted),
-    current_suit(Card::AnySuit)
+    m_id(id),
+    m_active(-1),
+    m_state(NotStarted),
+    m_active_suit(Card::AnySuit)
 {
     /*connect(deck.data(), &Deck::noCardsLeft, [this]() {
         for (int i = 0; i < CARDS_TO_REMOVE; ++i)
@@ -23,46 +24,46 @@ Game::~Game()
 {
 }
 
-Game::GameStates Game::getState() { return state; }
+Game::GameStates Game::getState() { return m_state; }
 
-const PlayersList &Game::getPlayers() { return players; }
+const PlayersList &Game::getPlayers() { return m_players; }
 
 PlayerPtr Game::getPlayer(int index)
 {
     if (index < 0)
         qDebug("Game::getPlayer: index < 0");
-    else if (index > players.count())
+    else if (index > m_players.count())
         qDebug("Game::getPlayer: index > players count");
     else
     {
-        return players[index];
+        return m_players[index];
     }
 }
 
 PlayerPtr Game::getActivePlayer()
 {
-    return players[active];
+    return m_players[m_active];
 }
 
 PlayerPtr Game::getNextPlayer()
 {
-    if (players[active] == players.last())
-        return players.first();
-    return players[active + 1];
+    if (m_players[m_active] == m_players.last())
+        return m_players.first();
+    return m_players[m_active + 1];
 }
 
 DeckPtr Game::getDeck()
 {
-    return deck;
+    return m_deck;
 }
 
 void Game::newRound()
 {
-    current_suit = Card::AnySuit;
-    active = 0;
+    m_active_suit = Card::AnySuit;
+    m_active = 0;
 
-    deck.reset(new Deck);
-    deck->shuffle();
+    m_deck.reset(new Deck);
+    m_deck->shuffle();
 
     changeGameState(InProgress);
     emit newRoundStarted();
@@ -70,30 +71,30 @@ void Game::newRound()
 
 void Game::join(PlayerPtr player)
 {
-    players.append(player);
+    m_players.append(player);
     emit playerJoined(player);
 }
 
 void Game::leave(PlayerPtr player)
 {
-    players.removeOne(player);
+    m_players.removeOne(player);
     emit playerLeft(player);
 }
 
 void Game::takeCard(PlayerPtr target)
 {
-    auto card = deck->takeCard();
+    auto card = m_deck->takeCard();
     if (card == nullptr)
     {
         for (int i = 0; i < CARDS_TO_REMOVE; ++i)
         {
-            deck->moveToGraveyard(deck->lastPlayed());
+            m_deck->moveToGraveyard(m_deck->lastPlayed());
         }
 
-        deck->restore();
-        deck->shuffle();
+        m_deck->restore();
+        m_deck->shuffle();
 
-        card = deck->takeCard();
+        card = m_deck->takeCard();
     }
 
     target->takeCard(card);
@@ -114,7 +115,7 @@ void Game::extraTurn(PlayerPtr target)
 
 void Game::setActiveSuit(Card::Suit suit)
 {
-    current_suit = suit;
+    m_active_suit = suit;
     emit activeSuitChanged(suit);
 }
 
@@ -122,21 +123,21 @@ void Game::setActivePlayer(int index)
 {
     if (index < 0)
         qDebug("Game::setActivePlayer: index < 0");
-    else if (index > players.count())
+    else if (index > m_players.count())
         qDebug("Game::setActivePlayer: index > players count");
     else
     {
-        active = index;
+        m_active = index;
         emit activePlayerChanged(index);
-        emit activePlayerChanged(players[index]);
+        emit activePlayerChanged(m_players[index]);
     }
 }
 
 void Game::setActivePlayer(PlayerPtr player)
 {
-    if (players.contains(player))
+    if (m_players.contains(player))
     {
-        auto index = players.indexOf(player);
+        auto index = m_players.indexOf(player);
         setActivePlayer(index);
     }
 }
@@ -158,6 +159,6 @@ void Game::pause()
 
 void Game::changeGameState(Game::GameStates state)
 {
-    this->state = state;
+    this->m_state = state;
     emit gameStateChanged(state);
 }

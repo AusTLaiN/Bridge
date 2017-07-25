@@ -1,5 +1,7 @@
 #include "deck.h"
+#include "standartcardfactory.h"
 
+#include <QJsonArray>
 #include <QMetaEnum>
 
 using namespace bridge_game;
@@ -9,16 +11,16 @@ Deck::Deck(QObject *parent) :
 {
     QMetaEnum suits = QMetaEnum::fromType<Card::Suit>();
 
-    for (int i = 1; i < suits.keyCount(); ++i)
+    for (int i = 0; i < 4; ++i)
     {
         auto suit = static_cast<Card::Suit>(suits.value(i));
 
-        remaining.append(CardPtr(new Six(suit)));
+        m_remaining.append(CardPtr(new Six(suit)));
         //remaining.append(CardPtr(new Seven(suit)));
-        remaining.append(CardPtr(new Eight(suit)));
+        m_remaining.append(CardPtr(new Eight(suit)));
         //remaining.append(CardPtr(new Nine(suit)));
         //remaining.append(CardPtr(new Ten(suit)));
-        remaining.append(CardPtr(new Jack(suit)));
+        m_remaining.append(CardPtr(new Jack(suit)));
         //remaining.append(CardPtr(new Queen(suit)));
         //remaining.append(CardPtr(new King(suit)));
         //remaining.append(CardPtr(new Ace(suit)));
@@ -29,33 +31,49 @@ Deck::~Deck()
 {
 }
 
-const CardList &Deck::getRemaining() { return remaining; }
+const CardList &Deck::getRemaining() { return m_remaining; }
 
-const CardList &Deck::getPlayed() { return played; }
+const CardList &Deck::getPlayed() { return m_played; }
 
-const CardList &Deck::getGraveyard() { return graveyard; }
+const CardList &Deck::getGraveyard() { return m_graveyard; }
 
-QStringList Deck::toStringList()
+QJsonObject Deck::toJson()
 {
-    QStringList list;
+    QJsonObject json;
 
-    for (auto card : remaining)
-    {
-        list << card.data()->toString();
-    }
+    json["remaining"] = Serializable::listToJson<CardPtr>(m_remaining);
+    json["played"] = Serializable::listToJson<CardPtr>(m_played);
+    json["graveyard"] = Serializable::listToJson<CardPtr>(m_graveyard);
 
-    return list;
+    return json;
+}
+
+void Deck::fromJson(const QJsonObject &json)
+{
+    StandartCardFactory factory;
+
+    QJsonArray remArray = json["remaining"].toArray(),
+               playedArray = json["played"].toArray(),
+               graveArray = json["graveyard"].toArray();
+
+    auto func = [&factory](const QJsonObject &obj) {
+        return factory.createCard(obj);
+    };
+
+    m_remaining = Serializable::listFromJson<CardPtr, decltype(func)>(remArray, func);
+    m_played = Serializable::listFromJson<CardPtr, decltype(func)>(playedArray, func);
+    m_graveyard = Serializable::listFromJson<CardPtr, decltype(func)>(graveArray, func);
 }
 
 CardPtr Deck::lastPlayed()
 {
-    return played.last();
+    return m_played.last();
 }
 
 CardPtr Deck::takeCard()
 {
-    if (!remaining.empty())
-        return remaining.takeFirst();
+    if (!m_remaining.empty())
+        return m_remaining.takeFirst();
 
     emit noCardsLeft();
     return CardPtr(nullptr);
@@ -63,52 +81,52 @@ CardPtr Deck::takeCard()
 
 void Deck::addToDeck(CardPtr card)
 {
-    remaining.append(card);
+    m_remaining.append(card);
 }
 
 void Deck::addToPlayed(CardPtr card)
 {
-    played.append(card);
+    m_played.append(card);
 }
 
 void Deck::moveToGraveyard(int index)
 {
-    auto card = played.takeAt(index);
-    graveyard.append(card);
+    auto card = m_played.takeAt(index);
+    m_graveyard.append(card);
 }
 
 void Deck::moveToGraveyard(CardPtr card)
 {
-    played.removeAll(card);
-    graveyard.append(card);
+    m_played.removeAll(card);
+    m_graveyard.append(card);
 }
 
 void Deck::restore()
 {
-    for (auto card : played)
+    for (auto card : m_played)
     {
-        remaining.append(card);
+        m_remaining.append(card);
     }
 
-    played.clear();
+    m_played.clear();
 }
 
 void Deck::shuffle()
 {
-    qDebug("Deck::shake");
-    qDebug() << "Remaining count : " << remaining.count();
+    qDebug("Deck::shuffle");
+    //qDebug() << "Remaining count : " << m_remaining.count();
 
     CardList new_list;
 
-    for (int i = remaining.count(); i > 0; --i)
+    for (int i = m_remaining.count(); i > 0; --i)
     {
-        int index = rand() % remaining.count();
+        int index = rand() % m_remaining.count();
 
-        auto card = remaining.takeAt(index);
+        auto card = m_remaining.takeAt(index);
         new_list.append(card);
 
-        qDebug() << "i = " << i << " Index = " << index << " Remaining = " << remaining.count();
+        //qDebug() << "i = " << i << " Index = " << index << " Remaining = " << m_remaining.count();
     }
 
-    remaining = new_list;
+    m_remaining = new_list;
 }

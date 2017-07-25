@@ -9,41 +9,42 @@
 
 namespace bridge_game {
 
-class Card : public QObject
+class Card : public QObject, public Serializable
 {
     Q_OBJECT
 
 public:
     enum Suit {
-        UndefinedSuit = 0,
-        AnySuit = 100,
+        Clubs           = 1,
+        Diamonds        = 2,
+        Hearts          = 3,
+        Spades          = 4,
 
-        Clubs = 1,
-        Diamonds,
-        Hearts,
-        Spades
+        UndefinedSuit   = 100000,
+        AnySuit         = 100001
     };
     Q_ENUM(Suit)
 
     enum Rank {
-        UndefinedRank = 0,
-        AnyRank = 100,
+        Six             = 6,
+        Seven           = 7,
+        Eight           = 8,
+        Nine            = 9,
+        Ten             = 10,
+        Jack            = 11,
+        Queen           = 12,
+        King            = 13,
+        Ace             = 14,
 
-        Six = 6,
-        Seven = 7,
-        Eight = 8,
-        Nine = 9,
-        Ten = 10,
-        Jack = 11,
-        Queen = 12,
-        King = 13,
-        Ace = 14
+        UndefinedRank   = 200000,
+        AnyRank         = 200001
     };
     Q_ENUM(Rank)
 
-    static int cardValue(Rank card_rank);
+    static int cardValue(Rank card_rank, bridge_game::Card::Suit suit);
     static Rank cardRank(int numeric_rank);
-    static QString cardName(Rank card_rank, Suit card_suit);
+    static QString toString(Rank rank);
+    static QString toString(Suit suit);
 
 public:
     explicit Card(Rank rank, Suit suit, QObject *parent = 0);
@@ -54,25 +55,28 @@ public:
     Suit getSuit();
     Rank getRank();
 
-    virtual QString toString();
+    // Serializable interface
+
+    virtual QJsonObject toJson() override;
+    virtual void fromJson(const QJsonObject &json) override;
 
 signals:
     void playableChanged(bool flag);
 
 public slots:
     void setPlayable(bool playable);
-    void setValue(int value);
+    /*void setValue(int value);
     void setSuit(Suit suit);
-    void setRank(Rank rank);
+    void setRank(Rank rank);*/
 
     virtual void action(ActionArgs args);
 
 protected:
-    bool _playable;
-    int _value;
-    Rank _rank;
-    Suit _suit;
-}; // Card
+    bool m_playable;
+    int m_value;
+    Rank m_rank;
+    Suit m_suit;
+};
 
 } // bridge_game
 

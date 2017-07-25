@@ -11,7 +11,6 @@ TEMPLATE = app
 
 SOURCES += \
     Game/Cards/ace.cpp \
-    Game/Cards/actionargs.cpp \
     Game/Cards/eight.cpp \
     Game/Cards/jack.cpp \
     Game/Cards/king.cpp \
@@ -24,7 +23,10 @@ SOURCES += \
     Game/deck.cpp \
     Game/game.cpp \
     Game/main.cpp \
-    Game/player.cpp
+    Game/player.cpp \
+    Game/serializable.cpp \
+    Game/abstractcardfactory.cpp \
+    Game/standartcardfactory.cpp
 
 HEADERS += \
     Game/Cards/ace.h \
@@ -42,7 +44,10 @@ HEADERS += \
     Game/deck.h \
     Game/game.h \
     Game/global.h \
-    Game/player.h
+    Game/player.h \
+    Game/serializable.h \
+    Game/abstractcardfactory.h \
+    Game/standartcardfactory.h
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings

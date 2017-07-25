@@ -13,8 +13,6 @@ struct ActionArgs
     PlayerPtr target;
 
     CardPtr card;
-
-    QString toString();
 };
 
 

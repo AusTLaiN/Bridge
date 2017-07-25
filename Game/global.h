@@ -3,6 +3,8 @@
 
 #include <QSharedPointer>
 
+#include "serializable.h"
+
 namespace bridge_game {
 
 class Card;

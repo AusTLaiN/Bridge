@@ -8,12 +8,12 @@
 
 namespace bridge_game {
 
-class Player : public QObject
+class Player : public QObject, public Serializable
 {
     Q_OBJECT
 
 public:
-    explicit Player(QObject *parent = 0);
+    explicit Player(int m_id, QObject *parent = 0);
 
     const CardList &getCards();
     QString getName();
@@ -23,7 +23,10 @@ public:
     int calculatePoints();
     int getScore();
 
-    QString toString();
+    // Serializable interface
+
+    virtual QJsonObject toJson() override;
+    virtual void fromJson(const QJsonObject &json) override;
 
 signals:
     void cardTaken(CardPtr card);
@@ -31,8 +34,8 @@ signals:
     void extraTurnGained();
 
 public slots:
-    void setName(const QString &name);
-    void setAddr(const QString &addr);
+    void setName(const QString &m_name);
+    void setAddr(const QString &m_addr);
 
     void takeCard(CardPtr card);
     void skipTurn();
@@ -42,11 +45,13 @@ public slots:
     int addPoints(int points);
 
 protected:
-    CardList cards;
-    QString name;
-    QString addr;
-    int turns_blocked;
-    int score;
+    CardList m_cards;
+    QString m_name;
+    QString m_addr;
+    int m_turns_blocked;
+    int m_score;
+
+    int m_id;
 };
 
 } // bridge_game
