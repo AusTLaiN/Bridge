@@ -10,10 +10,6 @@ namespace bridge_game {
 class Serializable
 {
 public:
-    template<typename T>
-    using Parser = QJsonObject (*)(const T&);
-
-public:
     Serializable();
     virtual ~Serializable();
 
@@ -21,43 +17,28 @@ public:
     virtual void fromJson(const QJsonObject &json) = 0;
     virtual QJsonDocument toJsonDoc();
 
-    // Parse should have next signature:
-    // QJsonObject example(const T &obj);
+
+
+    // Functions for easy serialization of list of objects
+
+    // Parser should have next signature:
+    // QJsonObject example(const T &obj) for serialization
+    // T example(const QJsonObject &obj) for deserialization
     // Where T is your class
 
-    template <typename T, typename Parse>
-    static QList<T> listFromJson(const QJsonArray &array, Parse parser);
-    template <typename T>
-    static QList<T> listFromJson(const QJsonArray &array);
+    template <typename T, typename Parser>
+    static QList<T> listFromJson(const QJsonArray &array, Parser parser);
+    template <typename T, typename Parser>
+    static QList<T> listFromJson(QList<T> &list, const QJsonArray &array, Parser parser);
 
-    template <typename T, typename Parse>
-    static QJsonArray listToJson(const QList<T> &list, Parse parser);
-    template <typename T>
-    static QJsonArray listToJson(const QList<T> &list);
+    template <typename T, typename Parser>
+    static QJsonArray listToJson(const QList<T> &list, Parser parser);
 
 };
 
-// Converts list to Json.
-// T must be inherited from Serializable
-// virtual toJson() function is used to serialize single object
 
-template<typename T>
-QJsonArray Serializable::listToJson(const QList<T> &list)
-{
-    QJsonArray array;
-
-    for (T obj : list)
-    {
-        array.append(obj->toJson());
-    }
-
-    return array;
-}
-
-// Same function, but with custom Parser
-
-template<typename T, typename Parse>
-QJsonArray Serializable::listToJson(const QList<T> &list, Parse parser)
+template<typename T, typename Parser>
+QJsonArray Serializable::listToJson(const QList<T> &list, Parser parser)
 {
     QJsonArray array;
 
@@ -69,28 +50,15 @@ QJsonArray Serializable::listToJson(const QList<T> &list, Parse parser)
     return array;
 }
 
+// Deserialization functions
 
-template<typename T>
-QList<T> Serializable::listFromJson(const QJsonArray &array)
+// Overloaded function. Takes QList<T> as argument, so type T is passed to the function
+// It enables function call without specifying template classes
+// Fills list with objects and returns it. List is not checked for emptiness
+
+template<typename T, typename Parser>
+QList<T> Serializable::listFromJson(QList<T> &list, const QJsonArray &array, Parser parser)
 {
-    QList<T> list;
-
-    for (int i = 0; i < array.size(); ++i)
-    {
-        auto JsonObj = array[i].toObject();
-        T obj;
-        obj.fromJson(JsonObj);
-        list.append(obj);
-    }
-
-    return list;
-}
-
-template<typename T, typename Parse>
-QList<T> Serializable::listFromJson(const QJsonArray &array, Parse parser)
-{
-    QList<T> list;
-
     for (int i = 0; i < array.size(); ++i)
     {
         auto JsonObj = array[i].toObject();
@@ -99,6 +67,15 @@ QList<T> Serializable::listFromJson(const QJsonArray &array, Parse parser)
     }
 
     return list;
+}
+
+// Overloaded function. Needs specifying template for each call
+
+template<typename T, typename Parser>
+QList<T> Serializable::listFromJson(const QJsonArray &array, Parser parser)
+{
+    QList<T> list;
+    return listFromJson(list, array, parser);
 }
 
 } // bridge game namespace end

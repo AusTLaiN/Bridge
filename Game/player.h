@@ -13,15 +13,21 @@ class Player : public QObject, public Serializable
     Q_OBJECT
 
 public:
+    static QJsonObject serialize(const PlayerPtr &player);
+    static PlayerPtr deserialize(const QJsonObject &json);
+
+public:
     explicit Player(int m_id, QObject *parent = 0);
 
-    const CardList &getCards();
+    const CardList& getCards();
     QString getName();
     QString getAddr();
     int getTurnsBlocked();
 
     int calculatePoints();
     int getScore();
+
+    int getId();
 
     // Serializable interface
 
@@ -46,8 +52,11 @@ public slots:
 
 protected:
     CardList m_cards;
+
     QString m_name;
     QString m_addr;
+
+    // Negative value counts as extra-turns
     int m_turns_blocked;
     int m_score;
 

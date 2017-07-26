@@ -16,9 +16,9 @@ public:
     explicit Deck(QObject *parent = 0);
     ~Deck();
 
-    const CardList &getRemaining();
-    const CardList &getPlayed();
-    const CardList &getGraveyard();
+    const CardList& getRemaining();
+    const CardList& getPlayed();
+    const CardList& getGraveyard();
 
     // Serializable interface
 

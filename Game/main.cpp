@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 
     Deck deck;
 
-    qcout << deck.toJsonDoc().toJson() << endl;
+    //qcout << deck.toJsonDoc().toJson() << endl;
 
     deck.shuffle();
 
@@ -28,14 +28,23 @@ int main(int argc, char *argv[])
 
     deck2.fromJson(deck.toJson());
 
-    qcout << deck2.toJsonDoc().toJson() << endl;
+    //qcout << deck2.toJsonDoc().toJson() << endl;
 
     Game game(rand());
+    PlayerPtr player1(new Player(rand()));
+    PlayerPtr player2(new Player(rand()));
 
-    game.join(PlayerPtr(new Player(rand())));
+    game.join(player1);
     game.newRound();
 
-    qcout << game.getPlayer(0)->toJsonDoc().toJson() << endl;
+    game.takeCards(player1, 3);
+
+    //qcout << game.getPlayer(0)->toJsonDoc().toJson() << endl;
+    auto json_p1 = player1->toJson();
+    player2->fromJson(json_p1);
+    //qcout << player2->toJsonDoc().toJson() << endl;
+
+    qcout << game.toJsonDoc().toJson() << endl;
 
 
     qcout.flush();

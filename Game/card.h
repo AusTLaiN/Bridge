@@ -46,6 +46,9 @@ public:
     static QString toString(Rank rank);
     static QString toString(Suit suit);
 
+    static QJsonObject serialize(const CardPtr &card);
+    static CardPtr deserialize(const QJsonObject &json);
+
 public:
     explicit Card(Rank rank, Suit suit, QObject *parent = 0);
     virtual ~Card() = 0;

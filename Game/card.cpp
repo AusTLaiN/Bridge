@@ -1,6 +1,7 @@
 #include "card.h"
 #include "game.h"
 #include "actionargs.h"
+#include "standartcardfactory.h"
 
 #include <QMetaEnum>
 
@@ -50,6 +51,16 @@ QString Card::toString(Card::Suit suit)
     QMetaEnum metaSuit = QMetaEnum::fromType<Suit>();
 
     return QString(metaSuit.valueToKey(suit));
+}
+
+QJsonObject Card::serialize(const CardPtr &card)
+{
+    return card->toJson();
+}
+
+CardPtr Card::deserialize(const QJsonObject &json)
+{
+    return StandartCardFactory().createCard(json);
 }
 
 // Static end

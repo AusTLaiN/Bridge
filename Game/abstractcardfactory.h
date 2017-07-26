@@ -6,6 +6,8 @@
 
 namespace bridge_game {
 
+// Abstract factory for creating and deserializing cards
+
 class AbstractCardFactory
 {
 public:

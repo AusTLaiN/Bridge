@@ -9,7 +9,7 @@
 
 namespace bridge_game {
 
-class Game : public QObject
+class Game : public QObject, public Serializable
 {
     Q_OBJECT
 
@@ -20,6 +20,9 @@ public:
         Finished,
         Paused
     };
+    Q_ENUM(GameStates)
+
+    static QString toString(GameStates state);
 
     static const int WIN_SCORE = 125;
     static const int PLAYERS_LIMIT = 5;
@@ -32,12 +35,20 @@ public:
 
     GameStates getState();
 
-    const PlayersList &getPlayers();
+    const PlayersList& getPlayers();
     PlayerPtr getPlayer(int index);
+    PlayerPtr getPlayerById(int id);
     PlayerPtr getActivePlayer();
     PlayerPtr getNextPlayer();
 
     DeckPtr getDeck();
+
+    int getId();
+
+    // Serializable interface
+
+    virtual QJsonObject toJson() override;
+    virtual void fromJson(const QJsonObject &json) override;
 
 signals:
     void playerJoined(PlayerPtr player);
@@ -63,6 +74,7 @@ public slots:
     void leave(PlayerPtr player);
 
     void takeCard(PlayerPtr target);
+    void takeCards(PlayerPtr target, quint32 amount);
     void skipTurn(PlayerPtr target);
     void extraTurn(PlayerPtr target);
     void setActiveSuit(Card::Suit suit);
@@ -79,11 +91,12 @@ protected slots:
 protected:
     DeckPtr m_deck;
     PlayersList m_players;
-    GameStates m_state;
-    int m_active;
-    Card::Suit m_active_suit;
 
+    GameStates m_state;
     int m_id;
+
+    int m_active_player;
+    Card::Suit m_active_suit;
 };
 
 } // bridge_game

@@ -5,6 +5,9 @@
 
 #include "serializable.h"
 
+// Global include for almost all files
+// Contains class-forwarding, typedefs, aliases
+
 namespace bridge_game {
 
 class Card;

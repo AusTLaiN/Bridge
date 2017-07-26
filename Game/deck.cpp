@@ -15,15 +15,9 @@ Deck::Deck(QObject *parent) :
     {
         auto suit = static_cast<Card::Suit>(suits.value(i));
 
-        m_remaining.append(CardPtr(new Six(suit)));
-        //remaining.append(CardPtr(new Seven(suit)));
-        m_remaining.append(CardPtr(new Eight(suit)));
-        //remaining.append(CardPtr(new Nine(suit)));
-        //remaining.append(CardPtr(new Ten(suit)));
-        m_remaining.append(CardPtr(new Jack(suit)));
-        //remaining.append(CardPtr(new Queen(suit)));
-        //remaining.append(CardPtr(new King(suit)));
-        //remaining.append(CardPtr(new Ace(suit)));
+        addToDeck(StandartCardFactory().createCard(Card::Six, suit));
+        addToDeck(StandartCardFactory().createCard(Card::Eight, suit));
+        addToDeck(StandartCardFactory().createCard(Card::Jack, suit));
     }
 }
 
@@ -31,38 +25,38 @@ Deck::~Deck()
 {
 }
 
-const CardList &Deck::getRemaining() { return m_remaining; }
+const CardList& Deck::getRemaining() { return m_remaining; }
 
-const CardList &Deck::getPlayed() { return m_played; }
+const CardList& Deck::getPlayed() { return m_played; }
 
-const CardList &Deck::getGraveyard() { return m_graveyard; }
+const CardList& Deck::getGraveyard() { return m_graveyard; }
 
 QJsonObject Deck::toJson()
 {
     QJsonObject json;
 
-    json["remaining"] = Serializable::listToJson<CardPtr>(m_remaining);
-    json["played"] = Serializable::listToJson<CardPtr>(m_played);
-    json["graveyard"] = Serializable::listToJson<CardPtr>(m_graveyard);
+    json["remaining"] = Serializable::listToJson(m_remaining, Card::serialize);
+    json["played"] = Serializable::listToJson(m_played, Card::serialize);
+    json["graveyard"] = Serializable::listToJson(m_graveyard, Card::serialize);
 
     return json;
 }
 
 void Deck::fromJson(const QJsonObject &json)
 {
-    StandartCardFactory factory;
-
     QJsonArray remArray = json["remaining"].toArray(),
                playedArray = json["played"].toArray(),
                graveArray = json["graveyard"].toArray();
 
-    auto func = [&factory](const QJsonObject &obj) {
-        return factory.createCard(obj);
+    // Function returns CardPtr, not Card
+    // so it can be used for serializing list
+    auto func = [](const QJsonObject &obj) -> CardPtr {
+        return StandartCardFactory().createCard(obj);
     };
 
-    m_remaining = Serializable::listFromJson<CardPtr, decltype(func)>(remArray, func);
-    m_played = Serializable::listFromJson<CardPtr, decltype(func)>(playedArray, func);
-    m_graveyard = Serializable::listFromJson<CardPtr, decltype(func)>(graveArray, func);
+    Serializable::listFromJson(m_remaining, remArray, Card::deserialize);
+    Serializable::listFromJson(m_played, playedArray, Card::deserialize);
+    Serializable::listFromJson(m_graveyard, graveArray, Card::deserialize);
 }
 
 CardPtr Deck::lastPlayed()
@@ -114,7 +108,7 @@ void Deck::restore()
 void Deck::shuffle()
 {
     qDebug("Deck::shuffle");
-    //qDebug() << "Remaining count : " << m_remaining.count();
+    qDebug() << "Remaining count : " << m_remaining.count();
 
     CardList new_list;
 

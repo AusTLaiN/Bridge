@@ -1,10 +1,21 @@
 #include "player.h"
-#include "standartcardfactory.h"
 
 #include <QDebug>
 #include <QJsonArray>
 
 using namespace bridge_game;
+
+QJsonObject Player::serialize(const PlayerPtr &player)
+{
+    return player->toJson();
+}
+
+PlayerPtr Player::deserialize(const QJsonObject &json)
+{
+    Player *p = new Player(0);
+    p->fromJson(json);
+    return PlayerPtr(p);
+}
 
 Player::Player(int id, QObject *parent) :
     QObject(parent),
@@ -17,13 +28,15 @@ Player::Player(int id, QObject *parent) :
 
 }
 
-const CardList &Player::getCards() { return m_cards; }
+const CardList& Player::getCards() { return m_cards; }
 
 QString Player::getName() { return m_name; }
 
 QString Player::getAddr() { return m_addr;}
 
 int Player::getScore() { return m_score; }
+
+int Player::getId() { return m_id; }
 
 QJsonObject Player::toJson()
 {
@@ -34,38 +47,40 @@ QJsonObject Player::toJson()
     json["address"] = m_addr;
     json["score"] = m_score;
     json["turns blocked"] = m_turns_blocked;
-    json["cards"] = Serializable::listToJson<CardPtr>(m_cards);
+    json["cards"] = Serializable::listToJson(m_cards, Card::serialize);
 
     return json;
 }
 
 void Player::fromJson(const QJsonObject &json)
 {
-    StandartCardFactory factory;
-
-    auto func = [&factory](const QJsonObject &obj) {
-        return factory.createCard(obj);
-    };
-
     m_id = json["id"].toInt();
     m_name = json["name"].toString();
     m_addr = json["address"].toString();
     m_score = json["score"].toInt();
     m_turns_blocked = json["turns blocked"].toInt();
-    m_cards = Serializable::listFromJson<CardPtr, decltype(func)>(json["cards"].toArray(), func);
+    m_cards = Serializable::listFromJson(m_cards, json["cards"].toArray(), Card::deserialize);
 }
 
 int Player::getTurnsBlocked() { return m_turns_blocked; }
 
-void Player::setName(const QString &name) { this->m_name = name; }
+void Player::setName(const QString &name) { m_name = name; }
 
-void Player::setAddr(const QString &addr) { this->m_addr = addr; }
+void Player::setAddr(const QString &addr) { m_addr = addr; }
 
 
 int Player::calculatePoints()
 {
     qDebug("Player::calculatePoints");
-    return 0;
+
+    int points = 0;
+
+    for (CardPtr card : m_cards)
+    {
+        points += card->getValue();
+    }
+
+    return points;
 }
 
 void Player::takeCard(CardPtr card)
