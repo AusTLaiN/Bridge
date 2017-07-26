@@ -40,9 +40,9 @@ const PlayersList& Game::getPlayers() { return m_players; }
 PlayerPtr Game::getPlayer(int index)
 {
     if (index < 0)
-        qDebug("Game::getPlayer: index < 0");
+        handleError("Game::getPlayer: index < 0");
     else if (index > m_players.count())
-        qDebug("Game::getPlayer: index > players count");
+        handleError("Game::getPlayer: index > players count");
     else
     {
         return m_players[index];
@@ -53,23 +53,46 @@ PlayerPtr Game::getPlayer(int index)
 
 PlayerPtr Game::getPlayerById(int id)
 {
-    for (PlayerPtr player : m_players)
-        if (player->getId() == id)
-            return player;
+    if (id < 0)
+        handleError("Game::getPlayerById: id < 0");
+    else if (id > m_players.count())
+        handleError("Game::getPlayerById: id > players count");
+    else
+    {
+        for (PlayerPtr player : m_players)
+            if (player->getId() == id)
+                return player;
+    }
 
     return PlayerPtr(nullptr);
 }
 
 PlayerPtr Game::getActivePlayer()
 {
-    return m_players[m_active_player];
+    if (m_active_player < 0)
+        handleError("Game::getActivePlayer: active player index < 0");
+    else if (m_active_player > m_players.count())
+        handleError("Game::getActivePlayer: active player index > players count");
+    else
+        return m_players[m_active_player];
+
+    return PlayerPtr(nullptr);
 }
 
 PlayerPtr Game::getNextPlayer()
 {
-    if (m_players[m_active_player] == m_players.last())
-        return m_players.first();
-    return m_players[m_active_player + 1];
+    if (m_players.count())
+        handleError("Game::getNextPlayer: Only 1 player in game");
+    else if (m_active_player < 0 || m_active_player > m_players.count())
+        handleError("Game::getNextPlayer: invalid active player");
+    else
+    {
+        if (m_players[m_active_player] == m_players.last())
+            return m_players.first();
+        return m_players[m_active_player + 1];
+    }
+
+    return PlayerPtr(nullptr);
 }
 
 DeckPtr Game::getDeck()
@@ -127,18 +150,36 @@ void Game::newRound()
 
 void Game::join(PlayerPtr player)
 {
+    if (player == nullptr)
+    {
+        handleError("Game::join: player is null");
+        return;
+    }
+
     m_players.append(player);
     emit playerJoined(player);
 }
 
 void Game::leave(PlayerPtr player)
 {
+    if (player == nullptr)
+    {
+        handleError("Game::leave: player is null");
+        return;
+    }
+
     m_players.removeOne(player);
     emit playerLeft(player);
 }
 
 void Game::takeCard(PlayerPtr target)
 {
+    if (target == nullptr)
+    {
+        handleError("Game::takeCard: target is null");
+        return;
+    }
+
     auto card = m_deck->takeCard();
     if (card == nullptr)
     {
@@ -159,25 +200,44 @@ void Game::takeCard(PlayerPtr target)
 
 void Game::takeCards(PlayerPtr target, quint32 amount)
 {
-    if (amount)
+    if (amount && target)
         while(amount--)
             takeCard(target);
+    else
+    {
+        if (target == nullptr)
+            handleError("Game::takeCards: target is null");
+        if (amount == 0)
+            handleError("Game::takeCards: amount = 0");
+    }
 }
 
 void Game::skipTurn(PlayerPtr target)
 {
+    if (target == nullptr)
+    {
+        handleError("Game::skipTurn: target is null");
+        return;
+    }
+
     target->skipTurn();
     emit playerSkippedTurn(target);
 }
 
 void Game::extraTurn(PlayerPtr target)
 {
+    if (target == nullptr)
+    {
+        handleError("Game::extraTurn: target is null");
+        return;
+    }
+
     target->takeExtraTurn();
     emit playerTakenExtraTurn(target);
 }
 
 void Game::setActiveSuit(Card::Suit suit)
-{
+{   
     m_active_suit = suit;
     emit activeSuitChanged(suit);
 }
@@ -185,9 +245,9 @@ void Game::setActiveSuit(Card::Suit suit)
 void Game::setActivePlayer(int index)
 {
     if (index < 0)
-        qDebug("Game::setActivePlayer: index < 0");
+         handleError("Game::setActivePlayer: index < 0");
     else if (index > m_players.count())
-        qDebug("Game::setActivePlayer: index > players count");
+         handleError("Game::setActivePlayer: index > players count");
     else
     {
         m_active_player = index;
@@ -198,6 +258,12 @@ void Game::setActivePlayer(int index)
 
 void Game::setActivePlayer(PlayerPtr player)
 {
+    if (player == nullptr)
+    {
+        handleError("Game::setActivePlayer: player is null");
+        return;
+    }
+
     if (m_players.contains(player))
     {
         auto index = m_players.indexOf(player);
@@ -224,4 +290,10 @@ void Game::changeGameState(Game::GameStates state)
 {
     this->m_state = state;
     emit gameStateChanged(state);
+}
+
+void Game::handleError(const QString &message)
+{
+    qDebug() << "Game error : " << message;
+    emit errorOccured(message);
 }

@@ -66,6 +66,8 @@ signals:
     void gameStarted();
     void newRoundStarted();
 
+    void errorOccured(const QString &message);
+
 public slots:
     void finish();
     void newRound();
@@ -87,6 +89,7 @@ public slots:
 
 protected slots:
     void changeGameState(GameStates m_state);
+    void handleError(const QString &message);
 
 protected:
     DeckPtr m_deck;
