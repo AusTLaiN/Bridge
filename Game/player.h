@@ -15,6 +15,7 @@ class Player : public QObject, public Serializable
 public:
     static QJsonObject serialize(const PlayerPtr &player);
     static PlayerPtr deserialize(const QJsonObject &json);
+    static void hideCards(QJsonObject &json);
 
 public:
     explicit Player(int m_id, QObject *parent = 0);
@@ -49,6 +50,9 @@ public slots:
 
     int addPoints();
     int addPoints(int points);
+
+    void playCard(ActionArgs args, int card_number);
+    void playCard(ActionArgs args, CardPtr card);
 
 protected:
     CardList m_cards;

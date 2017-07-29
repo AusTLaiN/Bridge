@@ -11,8 +11,6 @@ class StandartCardFactory : public AbstractCardFactory
 public:
     StandartCardFactory();
 
-    // AbstractCardFactory interface
-
     virtual CardPtr createCard(Card::Rank rank, Card::Suit suit) override;
     virtual CardPtr createCard(const QJsonObject &json) override;
 };

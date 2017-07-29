@@ -6,6 +6,7 @@
 #include "global.h"
 #include "deck.h"
 #include "player.h"
+#include "abstractdeckfactory.h"
 
 namespace bridge_game {
 
@@ -28,6 +29,7 @@ public:
     static const int PLAYERS_LIMIT = 5;
     static const int TURN_TIME_LIMIT = 90 * 1000;
     static const int CARDS_TO_REMOVE = 2;
+    static const int CARDS_START_WITH = 5;
 
 public:
     explicit Game(int id, QObject *parent = 0);
@@ -66,6 +68,9 @@ signals:
     void gameStarted();
     void newRoundStarted();
 
+    void newActionsRecieved(QList<ActionPtr> actions);
+    void actionsExecuted(QList<ActionPtr> actions);
+
     void errorOccured(const QString &message);
 
 public slots:
@@ -75,14 +80,22 @@ public slots:
     void join(PlayerPtr player);
     void leave(PlayerPtr player);
 
-    void takeCard(PlayerPtr target);
-    void takeCards(PlayerPtr target, quint32 amount);
-    void skipTurn(PlayerPtr target);
-    void extraTurn(PlayerPtr target);
+    //void takeCard(PlayerPtr target);
+    //void takeCards(PlayerPtr target, quint32 amount);
+    //void skipTurn(PlayerPtr target);
+    //void extraTurn(PlayerPtr target);
     void setActiveSuit(Card::Suit suit);
+
+    void playCard(PlayerPtr player, int card_num);
+    void playCard(PlayerPtr player, CardPtr card);
+    void playCard(int player_num, CardPtr card);
+    void playCard(int player_num, int card_num);
 
     void setActivePlayer(int index);
     void setActivePlayer(PlayerPtr player);
+
+    void execute(ActionPtr action);
+    void execute(const QList<ActionPtr> &actions);
 
     void start();
     void pause();
@@ -100,6 +113,8 @@ protected:
 
     int m_active_player;
     Card::Suit m_active_suit;
+
+    DeckFactoryPtr m_deck_factory;
 };
 
 } // bridge_game

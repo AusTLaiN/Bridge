@@ -124,5 +124,4 @@ void Card::fromJson(const QJsonObject &json)
 
 void Card::action(ActionArgs args)
 {
-    qDebug("Card::action:");
 }

@@ -9,20 +9,12 @@ using namespace bridge_game;
 Deck::Deck(QObject *parent) :
     QObject(parent)
 {
-    QMetaEnum suits = QMetaEnum::fromType<Card::Suit>();
 
-    for (int i = 0; i < 4; ++i)
-    {
-        auto suit = static_cast<Card::Suit>(suits.value(i));
-
-        addToDeck(StandartCardFactory().createCard(Card::Six, suit));
-        addToDeck(StandartCardFactory().createCard(Card::Eight, suit));
-        addToDeck(StandartCardFactory().createCard(Card::Jack, suit));
-    }
 }
 
 Deck::~Deck()
 {
+
 }
 
 const CardList& Deck::getRemaining() { return m_remaining; }
@@ -48,12 +40,6 @@ void Deck::fromJson(const QJsonObject &json)
                playedArray = json["played"].toArray(),
                graveArray = json["graveyard"].toArray();
 
-    // Function returns CardPtr, not Card
-    // so it can be used for serializing list
-    auto func = [](const QJsonObject &obj) -> CardPtr {
-        return StandartCardFactory().createCard(obj);
-    };
-
     Serializable::listFromJson(m_remaining, remArray, Card::deserialize);
     Serializable::listFromJson(m_played, playedArray, Card::deserialize);
     Serializable::listFromJson(m_graveyard, graveArray, Card::deserialize);
@@ -75,24 +61,52 @@ CardPtr Deck::takeCard()
 
 void Deck::addToDeck(CardPtr card)
 {
-    m_remaining.append(card);
+    if (card == nullptr)
+        qDebug() << "Deck::addToDeck card is null";
+    else
+    {
+        m_remaining.append(card);
+        emit newCardAdded(card);
+    }
 }
 
 void Deck::addToPlayed(CardPtr card)
 {
-    m_played.append(card);
+    if (card == nullptr)
+    {
+        qDebug() << "Deck::addToPlayed: card is null";
+    }
+    else
+    {
+        m_played.append(card);
+    }
 }
 
 void Deck::moveToGraveyard(int index)
 {
     auto card = m_played.takeAt(index);
-    m_graveyard.append(card);
+
+    if (card == nullptr)
+        qDebug() << "Deck::moveToGraveyard: card is null";
+    else
+        m_graveyard.append(card);
 }
 
 void Deck::moveToGraveyard(CardPtr card)
 {
-    m_played.removeAll(card);
-    m_graveyard.append(card);
+    if (card == nullptr)
+    {
+        qDebug() << "Deck::moveToGraveyard: card is null";
+    }
+    else if (!m_played.contains(card))
+    {
+        qDebug() << "Deck::moveToGraveyard: played list does not contain card";
+    }
+    else
+    {
+        m_played.removeAll(card);
+        m_graveyard.append(card);
+    }
 }
 
 void Deck::restore()
@@ -123,4 +137,9 @@ void Deck::shuffle()
     }
 
     m_remaining = new_list;
+}
+
+bool Deck::empty()
+{
+    return m_remaining.empty();
 }

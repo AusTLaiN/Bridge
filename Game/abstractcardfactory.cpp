@@ -9,4 +9,5 @@ AbstractCardFactory::AbstractCardFactory()
 
 AbstractCardFactory::~AbstractCardFactory()
 {
+
 }

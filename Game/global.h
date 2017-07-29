@@ -2,6 +2,7 @@
 #define GLOBAL_H
 
 #include <QSharedPointer>
+#include <QDebug>
 
 #include "serializable.h"
 
@@ -33,6 +34,19 @@ struct ActionArgs;
 class Game;
 
     typedef QSharedPointer<Game> GamePtr;
+
+class AbstractCardFactory;
+
+    typedef QSharedPointer<AbstractCardFactory> CardFactoryPtr;
+
+class AbstractDeckFactory;
+
+    typedef QSharedPointer<AbstractDeckFactory> DeckFactoryPtr;
+
+class AbstractAction;
+
+    typedef QSharedPointer<AbstractAction> ActionPtr;
+
 
 } // namespace bridge_game
 

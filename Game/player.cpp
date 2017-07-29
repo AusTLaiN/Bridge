@@ -17,6 +17,11 @@ PlayerPtr Player::deserialize(const QJsonObject &json)
     return PlayerPtr(p);
 }
 
+void Player::hideCards(QJsonObject &json)
+{
+    json["cards"] = "Hidden";
+}
+
 Player::Player(int id, QObject *parent) :
     QObject(parent),
     m_id(id),
@@ -116,4 +121,33 @@ int Player::addPoints(int points)
     m_score += points;
 
     return m_score;
+}
+
+void Player::playCard(ActionArgs args, int card_number)
+{
+    if (card_number < 0 || card_number > m_cards.count())
+    {
+        qDebug() << "Player::playCard: invalid card_number";
+        return;
+    }
+
+    auto card = m_cards[card_number];
+    m_cards.removeAt(card_number);
+    card->action(args);
+}
+
+void Player::playCard(ActionArgs args, CardPtr card)
+{
+    if (card == nullptr)
+    {
+        qDebug() << "Player::playCard: card is null";
+        return;
+    }
+    if (!m_cards.contains(card))
+    {
+        qDebug() << "Player::playCard: card is not in player's hand";
+        return;
+    }
+
+    playCard(args, m_cards.indexOf(card));
 }

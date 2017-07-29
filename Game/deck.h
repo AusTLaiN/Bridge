@@ -27,6 +27,7 @@ public:
 
 signals:
     void noCardsLeft();
+    void newCardAdded(CardPtr card);
 
 public slots:
     CardPtr lastPlayed();
@@ -34,6 +35,9 @@ public slots:
 
     // Adds card to remaining list
     void addToDeck(CardPtr card);
+    /*void removeFromRemaining(CardPtr card);
+    void removeFromPlayed(CardPtr card);
+    void removeFromGraveyard(CardPtr card);*/
     // Adds card to played list
     void addToPlayed(CardPtr card);
     // Moves card from played to graveyard
@@ -44,6 +48,8 @@ public slots:
     void restore();
     // Shuffles deck
     void shuffle();
+
+    bool empty();
 
 protected:
     CardList m_remaining;

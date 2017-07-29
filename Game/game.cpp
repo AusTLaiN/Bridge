@@ -1,4 +1,7 @@
 #include "game.h"
+#include "standartdeckfactory.h"
+#include "abstractaction.h"
+#include "Actions/actions.h"
 
 #include <QMetaEnum>
 
@@ -18,15 +21,7 @@ Game::Game(int id, QObject *parent) :
     m_state(NotStarted),
     m_active_suit(Card::AnySuit)
 {
-    /*connect(deck.data(), &Deck::noCardsLeft, [this]() {
-        for (int i = 0; i < CARDS_TO_REMOVE; ++i)
-        {
-            deck->moveToGraveyard(deck->lastPlayed());
-        }
-
-        deck->restore();
-        deck->shake();
-    });*/
+    m_deck_factory.reset(new StandartDeckFactory);
 }
 
 Game::~Game()
@@ -81,7 +76,7 @@ PlayerPtr Game::getActivePlayer()
 
 PlayerPtr Game::getNextPlayer()
 {
-    if (m_players.count())
+    if (m_players.count() == 1)
         handleError("Game::getNextPlayer: Only 1 player in game");
     else if (m_active_player < 0 || m_active_player > m_players.count())
         handleError("Game::getNextPlayer: invalid active player");
@@ -138,13 +133,25 @@ void Game::fromJson(const QJsonObject &json)
 
 void Game::newRound()
 {
+    qDebug() << "Game::newRound";
+
     m_active_suit = Card::AnySuit;
     m_active_player = 0;
 
-    m_deck.reset(new Deck);
+    m_deck = m_deck_factory->createDeck();
     m_deck->shuffle();
 
     changeGameState(InProgress);
+
+    ActionPtr start(new ActionGameStart(this));
+    start->setTargets(m_players, AbstractAction::Global);
+
+    //QList<ActionPtr> actions;
+    //actions.append(start);
+    execute(start);
+
+    qDebug() << "Game::newRound: end";
+
     emit newRoundStarted();
 }
 
@@ -172,7 +179,69 @@ void Game::leave(PlayerPtr player)
     emit playerLeft(player);
 }
 
-void Game::takeCard(PlayerPtr target)
+void Game::playCard(PlayerPtr player, int card_num)
+{
+    if (player == nullptr)
+    {
+        handleError("Game::playCard: player is null");
+        return;
+    }
+    if (card_num < 0 || card_num > player->getCards().count())
+    {
+        handleError("Game::playCard: invalid card number");
+        return;
+    }
+
+    CardPtr card = player->getCards()[card_num];
+
+    playCard(player, card);
+}
+
+void Game::playCard(PlayerPtr player, CardPtr card)
+{
+    if (player == nullptr)
+    {
+        handleError("Game::playCard: player is null");
+        return;
+    }
+    if (card == nullptr)
+    {
+        handleError("Game::playCard: card is null");
+        return;
+    }
+
+    ActionArgs args;
+
+    args.game = this;
+    args.made_by = player.data();
+
+    m_deck->addToPlayed(card);
+    player->playCard(args, card);
+}
+
+void Game::playCard(int player_num, CardPtr card)
+{
+    if (player_num < 0 || player_num > m_players.count())
+    {
+        handleError("Game::playCard: invalid player number");
+        return;
+    }
+
+    playCard(m_players[player_num], card);
+}
+
+void Game::playCard(int player_num, int card_num)
+{
+    if (player_num < 0 || player_num > m_players.count())
+    {
+        handleError("Game::playCard: invalid player number");
+        return;
+    }
+
+    playCard(m_players[player_num], card_num);
+}
+
+/*void Game::takeCard(PlayerPtr target)
 {
     if (target == nullptr)
     {
@@ -196,13 +265,14 @@ void Game::takeCard(PlayerPtr target)
 
     target->takeCard(card);
     emit playerTakenCard(target, card);
-}
+}*/
 
-void Game::takeCards(PlayerPtr target, quint32 amount)
+/*void Game::takeCards(PlayerPtr target, quint32 amount)
 {
     if (amount && target)
         while(amount--)
-            takeCard(target);
+            0;
+            //takeCard(target);
     else
     {
         if (target == nullptr)
@@ -210,9 +280,9 @@ void Game::takeCards(PlayerPtr target, quint32 amount)
         if (amount == 0)
             handleError("Game::takeCards: amount = 0");
     }
-}
+}*/
 
-void Game::skipTurn(PlayerPtr target)
+/*void Game::skipTurn(PlayerPtr target)
 {
     if (target == nullptr)
     {
@@ -234,7 +304,7 @@ void Game::extraTurn(PlayerPtr target)
 
     target->takeExtraTurn();
     emit playerTakenExtraTurn(target);
-}
+}*/
 
 void Game::setActiveSuit(Card::Suit suit)
 {   
@@ -269,6 +339,42 @@ void Game::setActivePlayer(PlayerPtr player)
         auto index = m_players.indexOf(player);
         setActivePlayer(index);
     }
+}
+
+void Game::execute(ActionPtr action)
+{
+    QList<ActionPtr> list;
+    list.append(action);
+    execute(list);
+}
+
+void Game::execute(const QList<ActionPtr> &actions)
+{
+    emit newActionsRecieved(actions);
+
+    qDebug() << "Game::execute: start";
+
+    qDebug() << "Actions recieved :";
+    for (ActionPtr action : actions)
+    {
+        //qDebug() << action->toJsonDoc().toJson();
+        //qDebug() << QJsonDocument(action->toJson()).toJson();
+        //auto t = action->toJson();
+        //int a = 5;
+
+        QTextStream qcout(stdout);
+
+        qcout << action->toJsonDoc().toJson();
+    }
+
+    for (ActionPtr action : actions)
+    {
+        action->execute();
+    }
+
+    qDebug() << "Game::execute: end";
+
+    emit actionsExecuted(actions);
 }
 
 void Game::finish()

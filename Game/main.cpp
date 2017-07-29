@@ -18,33 +18,28 @@ int main(int argc, char *argv[])
 
     qcout << "Server started" << endl;
 
-    Deck deck;
-
-    //qcout << deck.toJsonDoc().toJson() << endl;
-
-    deck.shuffle();
-
-    Deck deck2;
-
-    deck2.fromJson(deck.toJson());
-
-    //qcout << deck2.toJsonDoc().toJson() << endl;
-
     Game game(rand());
     PlayerPtr player1(new Player(rand()));
     PlayerPtr player2(new Player(rand()));
 
     game.join(player1);
+    game.join(player2);
     game.newRound();
+    game.playCard(0, 4);
+    game.playCard(1, 2);
+    //qcout << game.toJsonDoc().toJson() << endl;
 
-    game.takeCards(player1, 3);
+    /*GamePtr game(new Game(rand()));
 
-    //qcout << game.getPlayer(0)->toJsonDoc().toJson() << endl;
-    auto json_p1 = player1->toJson();
-    player2->fromJson(json_p1);
-    //qcout << player2->toJsonDoc().toJson() << endl;
+    PlayerPtr player1(new Player(rand()));
+    PlayerPtr player2(new Player(rand()));
 
-    qcout << game.toJsonDoc().toJson() << endl;
+    game->join(player1);
+    game->join(player2);
+    game->newRound();
+    game->playCard(0, 4);
+
+    qcout << game->toJsonDoc().toJson() << endl;*/
 
 
     qcout.flush();

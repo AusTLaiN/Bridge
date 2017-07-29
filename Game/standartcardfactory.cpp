@@ -25,7 +25,10 @@ CardPtr StandartCardFactory::createCard(Card::Rank rank, Card::Suit suit)
     //case Card::King:
     //case Card::Ace:
     default:
+    {
+        qDebug() << "StandartCardFactory::createCard: Unknown rank : " << rank;
         return CardPtr(nullptr);
+    }
     }
 }
 

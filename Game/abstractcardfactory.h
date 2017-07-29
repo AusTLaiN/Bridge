@@ -12,7 +12,7 @@ class AbstractCardFactory
 {
 public:
     AbstractCardFactory();
-    virtual ~AbstractCardFactory() = 0;
+    virtual ~AbstractCardFactory();
 
     virtual CardPtr createCard(Card::Rank rank, Card::Suit suit) = 0;
     virtual CardPtr createCard(const QJsonObject &json) = 0;
