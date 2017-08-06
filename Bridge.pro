@@ -34,7 +34,7 @@ SOURCES += \
     Game/Actions/actiongamestart.cpp \
     Game/abstractcardfactory.cpp \
     Game/abstractdeckfactory.cpp \
-    Game/Actions/actionsetactivesuit.cpp
+    Game/Actions/actionsetactivesuit.cpp \
     Server/server.cpp
 
 HEADERS += \
@@ -65,7 +65,7 @@ HEADERS += \
     Game/Actions/actions.h \
     Game/Actions/actionrefilldeck.h \
     Game/Actions/actiongamestart.h \
-    Game/Actions/actionsetactivesuit.h
+    Game/Actions/actionsetactivesuit.h \
     Server/server.h
 
 # The following define makes your compiler emit warnings if you use
