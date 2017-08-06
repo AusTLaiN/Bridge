@@ -6,6 +6,7 @@
 #include "game.h"
 #include "deck.h"
 #include "actionargs.h"
+#include "server.h"
 
 using namespace bridge_game;
 
@@ -43,6 +44,8 @@ int main(int argc, char *argv[])
 
 
     qcout.flush();
+
+    Server server(8080);
 
     return a.exec();
 }

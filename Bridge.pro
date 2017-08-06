@@ -1,4 +1,4 @@
-QT += core
+QT += core websockets
 QT -= gui
 
 CONFIG += c++11
@@ -35,6 +35,7 @@ SOURCES += \
     Game/abstractcardfactory.cpp \
     Game/abstractdeckfactory.cpp \
     Game/Actions/actionsetactivesuit.cpp
+    Server/server.cpp
 
 HEADERS += \
     Game/Cards/ace.h \
@@ -65,6 +66,7 @@ HEADERS += \
     Game/Actions/actionrefilldeck.h \
     Game/Actions/actiongamestart.h \
     Game/Actions/actionsetactivesuit.h
+    Server/server.h
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -83,7 +85,8 @@ DISTFILES += \
     Client/new 1.html \
     3rd-party/Readme.txt \
     Server/Readme.txt \
-    Client/new 1.html
+    Client/new 1.html \
+    Client/client.html
 
 INCLUDEPATH += \
         $$PWD/Server \
