@@ -8,7 +8,7 @@ using namespace bridge_game;
 ActionGameStart::ActionGameStart(Game *game, QObject *parent) :
     AbstractAction(game, parent)
 {
-
+    m_name = "ActionGameStart";
 }
 
 void ActionGameStart::execute()

@@ -72,6 +72,8 @@ protected:
     Game *m_game;
 
     Card *m_caused_by;
+
+    QString m_name;
 };
 
 }

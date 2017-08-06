@@ -7,7 +7,7 @@ using namespace bridge_game;
 ActionSkipTurn::ActionSkipTurn(Game *game, QObject *parent) :
     AbstractAction(game, parent)
 {
-
+    m_name = "ActionSkipTurn";
 }
 
 void ActionSkipTurn::execute()

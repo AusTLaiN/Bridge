@@ -6,6 +6,7 @@ using namespace bridge_game;
 ActionSetActiveSuit::ActionSetActiveSuit(Game *game, Card::Suit suit, QObject *parent) :
     AbstractAction(game, parent)
 {
+    m_name = "ActionSetActiveSuit";
     m_suit = suit;
 }
 

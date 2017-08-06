@@ -6,7 +6,7 @@ using namespace bridge_game;
 ActionTakeCard::ActionTakeCard(Game *game, QObject *parent) :
     AbstractAction(game, parent)
 {
-
+    m_name = "ActionTakeCard";
 }
 
 void ActionTakeCard::execute()

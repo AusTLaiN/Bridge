@@ -6,7 +6,7 @@ using namespace bridge_game;
 ActionRefillDeck::ActionRefillDeck(Game *game, QObject *parent) :
     AbstractAction(game, parent)
 {
-
+    m_name = "ActionRefillDeck";
 }
 
 void ActionRefillDeck::execute()
@@ -24,17 +24,14 @@ void ActionRefillDeck::execute()
         return;
     }
 
-    // A bug here
-    // We need to left on board last played card
-
     auto last_card = deck->lastPlayed();
     deck->restore();
     deck->shuffle();
+    deck->removeCard(last_card);
+    deck->addToPlayed(last_card);
 
     for (int i = 0; i < Game::CARDS_TO_REMOVE; ++i)
     {
         deck->moveToGraveyard(deck->takeCard());
     }
-
-    //deck->addToPlayed(card);
 }

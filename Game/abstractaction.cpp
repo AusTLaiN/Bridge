@@ -10,7 +10,8 @@ AbstractAction::AbstractAction(Game *game, QObject *parent) :
     m_target_type(UndefinedTargetType),
     m_game(game),
     m_caused_by(nullptr),
-    m_owner(nullptr)
+    m_owner(nullptr),
+    m_name("AbstractAction")
 {
 
 }
@@ -54,6 +55,8 @@ QJsonObject AbstractAction::toJson()
 {
     QJsonObject json;
 
+    json["action name"] = m_name;
+
     if (m_game)
         json["game id"] = m_game->getId();
     else
@@ -76,14 +79,11 @@ QJsonObject AbstractAction::toJson()
     json["target type"] = m_target_type;
     json["target type name"] = QMetaEnum::fromType<AbstractAction::TargetType>().valueToKey(m_target_type);
 
-    // Shared ptr's without deleters
-
     QJsonArray arr;
 
     for (Player *player : m_targets)
     {
-        PlayerPtr item(player, [](Player *obj){});
-        auto j_item = item->toJson();
+        auto j_item = player->toJson();
         Player::hideCards(j_item);
 
         arr.append(j_item);

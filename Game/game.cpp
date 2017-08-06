@@ -210,6 +210,8 @@ void Game::playCard(PlayerPtr player, CardPtr card)
         return;
     }
 
+    qDebug() << "Game::playCard: card played = " << card->toJson()["name"].toString();
+
     ActionArgs args;
 
     args.game = this;

@@ -62,11 +62,27 @@ CardPtr Deck::takeCard()
 void Deck::addToDeck(CardPtr card)
 {
     if (card == nullptr)
-        qDebug() << "Deck::addToDeck card is null";
+        qDebug() << "Deck::addToDeck: card is null";
     else
     {
         m_remaining.append(card);
         emit newCardAdded(card);
+    }
+}
+
+void Deck::removeCard(CardPtr card)
+{
+    if (card == nullptr)
+    {
+        qDebug() << "Deck::removeCard: card is null";
+    }
+    else if (!m_remaining.contains(card))
+    {
+        qDebug() << "Deck::removeCard: card is not in the remaining pack";
+    }
+    else
+    {
+        m_remaining.removeAll(card);
     }
 }
 

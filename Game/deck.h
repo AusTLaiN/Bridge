@@ -35,6 +35,7 @@ public slots:
 
     // Adds card to remaining list
     void addToDeck(CardPtr card);
+    void removeCard(CardPtr card);
     /*void removeFromRemaining(CardPtr card);
     void removeFromPlayed(CardPtr card);
     void removeFromGraveyard(CardPtr card);*/
