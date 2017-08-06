@@ -11,7 +11,6 @@ TEMPLATE = app
 
 SOURCES += \
     Game/Cards/ace.cpp \
-    Game/Cards/actionargs.cpp \
     Game/Cards/eight.cpp \
     Game/Cards/jack.cpp \
     Game/Cards/king.cpp \
@@ -24,7 +23,18 @@ SOURCES += \
     Game/deck.cpp \
     Game/game.cpp \
     Game/main.cpp \
-    Game/player.cpp
+    Game/player.cpp \
+    Game/serializable.cpp \
+    Game/standartcardfactory.cpp \
+    Game/abstractaction.cpp \
+    Game/standartdeckfactory.cpp \
+    Game/Actions/actiontakecard.cpp \
+    Game/Actions/actionskipturn.cpp \
+    Game/Actions/actionrefilldeck.cpp \
+    Game/Actions/actiongamestart.cpp \
+    Game/abstractcardfactory.cpp \
+    Game/abstractdeckfactory.cpp \
+    Game/Actions/actionsetactivesuit.cpp
 
 HEADERS += \
     Game/Cards/ace.h \
@@ -42,7 +52,19 @@ HEADERS += \
     Game/deck.h \
     Game/game.h \
     Game/global.h \
-    Game/player.h
+    Game/player.h \
+    Game/serializable.h \
+    Game/abstractcardfactory.h \
+    Game/standartcardfactory.h \
+    Game/abstractaction.h \
+    Game/abstractdeckfactory.h \
+    Game/standartdeckfactory.h \
+    Game/Actions/actiontakecard.h \
+    Game/Actions/actionskipturn.h \
+    Game/Actions/actions.h \
+    Game/Actions/actionrefilldeck.h \
+    Game/Actions/actiongamestart.h \
+    Game/Actions/actionsetactivesuit.h
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings

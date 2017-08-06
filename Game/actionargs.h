@@ -7,14 +7,15 @@ namespace bridge_game {
 
 struct ActionArgs
 {
-    GamePtr game;
+    ActionArgs() :
+        game(nullptr),
+        made_by(nullptr)
+    {
 
-    PlayerPtr owner;
-    PlayerPtr target;
+    }
 
-    CardPtr card;
-
-    QString toString();
+    Game *game;
+    Player *made_by;
 };
 
 

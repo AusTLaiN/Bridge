@@ -8,7 +8,7 @@
 
 namespace bridge_game {
 
-class Deck : public QObject
+class Deck : public QObject, public Serializable
 {
     Q_OBJECT
 
@@ -16,14 +16,18 @@ public:
     explicit Deck(QObject *parent = 0);
     ~Deck();
 
-    const CardList &getRemaining();
-    const CardList &getPlayed();
-    const CardList &getGraveyard();
+    const CardList& getRemaining();
+    const CardList& getPlayed();
+    const CardList& getGraveyard();
 
-    QStringList toStringList();
+    // Serializable interface
+
+    virtual QJsonObject toJson() override;
+    virtual void fromJson(const QJsonObject &json) override;
 
 signals:
     void noCardsLeft();
+    void newCardAdded(CardPtr card);
 
 public slots:
     CardPtr lastPlayed();
@@ -31,6 +35,10 @@ public slots:
 
     // Adds card to remaining list
     void addToDeck(CardPtr card);
+    void removeCard(CardPtr card);
+    /*void removeFromRemaining(CardPtr card);
+    void removeFromPlayed(CardPtr card);
+    void removeFromGraveyard(CardPtr card);*/
     // Adds card to played list
     void addToPlayed(CardPtr card);
     // Moves card from played to graveyard
@@ -42,11 +50,13 @@ public slots:
     // Shuffles deck
     void shuffle();
 
+    bool empty();
+
 protected:
-    CardList remaining;
-    CardList played;
+    CardList m_remaining;
+    CardList m_played;
     // Cards that are completely out of the game
-    CardList graveyard;
+    CardList m_graveyard;
 };
 
 } // bridge_game

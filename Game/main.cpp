@@ -1,4 +1,5 @@
 #include <QCoreApplication>
+#include <QJsonDocument>
 #include <QMetaEnum>
 #include <QTextStream>
 
@@ -17,30 +18,29 @@ int main(int argc, char *argv[])
 
     qcout << "Server started" << endl;
 
-    Deck deck;
+    Game game(rand());
+    PlayerPtr player1(new Player(rand()));
+    PlayerPtr player2(new Player(rand()));
 
-    for (QString& card : deck.toStringList())
-    {
-        qcout << card << endl;
-    }
-
-    deck.shuffle();
-
-    for (QString& card : deck.toStringList())
-    {
-        qcout << card << endl;
-    }
-
-    Game game;
-
+    game.join(player1);
+    game.join(player2);
     game.newRound();
+    game.playCard(0, 4);
+    game.playCard(1, 2);
+    //qcout << game.toJsonDoc().toJson() << endl;
 
-    ActionArgs args;
-    args.owner = PlayerPtr(new Player());
-    args.target = PlayerPtr(new Player());
-    args.card = deck.takeCard();
+    /*GamePtr game(new Game(rand()));
 
-    qcout << args.toString();
+    PlayerPtr player1(new Player(rand()));
+    PlayerPtr player2(new Player(rand()));
+
+    game->join(player1);
+    game->join(player2);
+    game->newRound();
+    game->playCard(0, 4);
+
+    qcout << game->toJsonDoc().toJson() << endl;*/
+
 
     qcout.flush();
 

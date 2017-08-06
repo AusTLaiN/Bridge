@@ -6,10 +6,11 @@
 #include "global.h"
 #include "deck.h"
 #include "player.h"
+#include "abstractdeckfactory.h"
 
 namespace bridge_game {
 
-class Game : public QObject
+class Game : public QObject, public Serializable
 {
     Q_OBJECT
 
@@ -20,24 +21,36 @@ public:
         Finished,
         Paused
     };
+    Q_ENUM(GameStates)
+
+    static QString toString(GameStates state);
 
     static const int WIN_SCORE = 125;
     static const int PLAYERS_LIMIT = 5;
     static const int TURN_TIME_LIMIT = 90 * 1000;
     static const int CARDS_TO_REMOVE = 2;
+    static const int CARDS_START_WITH = 5;
 
 public:
-    explicit Game(QObject *parent = 0);
+    explicit Game(int id, QObject *parent = 0);
     ~Game();
 
     GameStates getState();
 
-    const PlayersList &getPlayers();
+    const PlayersList& getPlayers();
     PlayerPtr getPlayer(int index);
+    PlayerPtr getPlayerById(int id);
     PlayerPtr getActivePlayer();
     PlayerPtr getNextPlayer();
 
     DeckPtr getDeck();
+
+    int getId();
+
+    // Serializable interface
+
+    virtual QJsonObject toJson() override;
+    virtual void fromJson(const QJsonObject &json) override;
 
 signals:
     void playerJoined(PlayerPtr player);
@@ -51,9 +64,14 @@ signals:
     void activePlayerChanged(PlayerPtr player);
     void activePlayerChanged(int index);
 
-    void gameStateChanged(GameStates state);
+    void gameStateChanged(GameStates m_state);
     void gameStarted();
     void newRoundStarted();
+
+    void newActionsRecieved(QList<ActionPtr> actions);
+    void actionsExecuted(QList<ActionPtr> actions);
+
+    void errorOccured(const QString &message);
 
 public slots:
     void finish();
@@ -62,26 +80,41 @@ public slots:
     void join(PlayerPtr player);
     void leave(PlayerPtr player);
 
-    void takeCard(PlayerPtr target);
-    void skipTurn(PlayerPtr target);
-    void extraTurn(PlayerPtr target);
+    //void takeCard(PlayerPtr target);
+    //void takeCards(PlayerPtr target, quint32 amount);
+    //void skipTurn(PlayerPtr target);
+    //void extraTurn(PlayerPtr target);
     void setActiveSuit(Card::Suit suit);
+
+    void playCard(PlayerPtr player, int card_num);
+    void playCard(PlayerPtr player, CardPtr card);
+    void playCard(int player_num, CardPtr card);
+    void playCard(int player_num, int card_num);
 
     void setActivePlayer(int index);
     void setActivePlayer(PlayerPtr player);
+
+    void execute(ActionPtr action);
+    void execute(const QList<ActionPtr> &actions);
 
     void start();
     void pause();
 
 protected slots:
-    void changeGameState(GameStates state);
+    void changeGameState(GameStates m_state);
+    void handleError(const QString &message);
 
 protected:
-    DeckPtr deck;
-    PlayersList players;
-    GameStates state;
-    int active;
-    Card::Suit current_suit;
+    DeckPtr m_deck;
+    PlayersList m_players;
+
+    GameStates m_state;
+    int m_id;
+
+    int m_active_player;
+    Card::Suit m_active_suit;
+
+    DeckFactoryPtr m_deck_factory;
 };
 
 } // bridge_game
