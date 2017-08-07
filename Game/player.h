@@ -8,14 +8,19 @@
 
 namespace bridge_game {
 
-class Player : public QObject
+class Player : public QObject, public Serializable
 {
     Q_OBJECT
 
 public:
-    explicit Player(QObject *parent = 0);
+    static QJsonObject serialize(const PlayerPtr &player);
+    static PlayerPtr deserialize(const QJsonObject &json);
+    static void hideCards(QJsonObject &json);
 
-    const CardList &getCards();
+public:
+    explicit Player(int m_id, QObject *parent = 0);
+
+    const CardList& getCards();
     QString getName();
     QString getAddr();
     int getTurnsBlocked();
@@ -23,7 +28,12 @@ public:
     int calculatePoints();
     int getScore();
 
-    QString toString();
+    int getId();
+
+    // Serializable interface
+
+    virtual QJsonObject toJson() override;
+    virtual void fromJson(const QJsonObject &json) override;
 
 signals:
     void cardTaken(CardPtr card);
@@ -31,8 +41,8 @@ signals:
     void extraTurnGained();
 
 public slots:
-    void setName(const QString &name);
-    void setAddr(const QString &addr);
+    void setName(const QString &m_name);
+    void setAddr(const QString &m_addr);
 
     void takeCard(CardPtr card);
     void skipTurn();
@@ -41,12 +51,20 @@ public slots:
     int addPoints();
     int addPoints(int points);
 
+    void playCard(ActionArgs args, int card_number);
+    void playCard(ActionArgs args, CardPtr card);
+
 protected:
-    CardList cards;
-    QString name;
-    QString addr;
-    int turns_blocked;
-    int score;
+    CardList m_cards;
+
+    QString m_name;
+    QString m_addr;
+
+    // Negative value counts as extra-turns
+    int m_turns_blocked;
+    int m_score;
+
+    int m_id;
 };
 
 } // bridge_game

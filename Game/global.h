@@ -2,6 +2,12 @@
 #define GLOBAL_H
 
 #include <QSharedPointer>
+#include <QDebug>
+
+#include "serializable.h"
+
+// Global include for almost all files
+// Contains class-forwarding, typedefs, aliases
 
 namespace bridge_game {
 
@@ -29,7 +35,26 @@ class Game;
 
     typedef QSharedPointer<Game> GamePtr;
 
+class AbstractCardFactory;
+
+    typedef QSharedPointer<AbstractCardFactory> CardFactoryPtr;
+
+class AbstractDeckFactory;
+
+    typedef QSharedPointer<AbstractDeckFactory> DeckFactoryPtr;
+
+class AbstractAction;
+
+    typedef QSharedPointer<AbstractAction> ActionPtr;
+
+
 } // namespace bridge_game
 
+namespace bridge_server {
+
+class DataObject;
+    typedef QSharedPointer<DataObject> DataObjectPtr;
+
+}
 
 #endif // GLOBAL_H
