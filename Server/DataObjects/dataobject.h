@@ -3,7 +3,6 @@
 
 #include <QStack>
 #include <QJsonObject>
-#include <QJsonArray>
 #include <QDebug>
 #include "global.h"
 #include "serializable.h"
@@ -16,7 +15,7 @@ namespace bridge_server {
 
 class DataObject : public Serializable
 {
-    QList<QString> m_errors;
+    QStack<QString> m_errors;
     bool m_state;
     // uint m_gameId; // ???
     bridge_game::PlayerPtr m_player;

@@ -35,19 +35,14 @@ SOURCES += \
     Game/abstractcardfactory.cpp \
     Game/abstractdeckfactory.cpp \
     Game/Actions/actionsetactivesuit.cpp \
-    Game/Actions/actiongamestart.cpp \
-    Game/Actions/actionrefilldeck.cpp \
-    Game/Actions/actionsetactivesuit.cpp \
-    Game/Actions/actionskipturn.cpp \
-    Game/Actions/actiontakecard.cpp \
     Server/server.cpp \
     Server/command.cpp \
+    Server/ruler.cpp \
     Server/DataObjects/dataobject.cpp \
     Server/DataObjects/htmldataobject.cpp \
     Server/DataObjects/intdataobject.cpp \
     Server/DataObjects/flagdataobject.cpp \
     Server/DataObjects/cardlistdataobject.cpp \
-    Server/ruler.cpp \
     Server/dataobjectfactory.cpp \
     Server/message.cpp
 
@@ -80,12 +75,6 @@ HEADERS += \
     Game/Actions/actionrefilldeck.h \
     Game/Actions/actiongamestart.h \
     Game/Actions/actionsetactivesuit.h \
-    Game/Actions/actiongamestart.h \
-    Game/Actions/actionrefilldeck.h \
-    Game/Actions/actions.h \
-    Game/Actions/actionsetactivesuit.h \
-    Game/Actions/actionskipturn.h \
-    Game/Actions/actiontakecard.h \
     Server/command.h \
     Server/DataObjects/dataobject.h \
     Server/dataobjectfactory.h \

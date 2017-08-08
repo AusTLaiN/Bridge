@@ -55,6 +55,6 @@ DataObjectPtr DataObjectFactory::getOuterDataObject(Command& cmd)
             return DataObjectPtr(new CardListDataObject());
         default:
             qDebug() << "DataObjectFactory::getInnerDataObject: Unknown Command::ACTION" << endl;
-            DataObjectPtr(Q_NULLPTR);
+            return DataObjectPtr(Q_NULLPTR);
     }
 }

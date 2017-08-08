@@ -1,0 +1,45 @@
+#ifndef ACTIONS_H
+#define ACTIONS_H
+
+#ifndef ACTIONARGS_H
+#define ACTIONARGS_H
+
+#include <QMetaEnum>
+#include "global.h"
+
+namespace bridge_server {
+
+template <class T>
+class Command
+{
+  public:
+    enum ActionNumber {
+        Undefined,
+        CardForMyself,
+        CardForOpponent,
+        SkipTurnForMyself,
+        SkipTurnForOpponent,
+        CardLock,
+        ShakeDeckAnimate,
+        ScoreTableUpdate,
+        SuitOrder,
+        ActiveSuitUpdate
+    };
+    Q_ENUM(ActionNumber)
+
+    static CommandPtr makeCommand(ActionNumber action, T argObj);
+    static QString getActionName(ActionNumber action);
+    ActionNumber getActionNumber();
+    
+  protected:
+    
+    ActionName _actionName;
+    T _actionArgObj;
+};
+
+
+
+} // bridge_server
+
+
+#endif // ACTIONS_H
