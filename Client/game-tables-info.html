@@ -1,0 +1,26 @@
+<html>
+    <header>
+        
+    </header>
+    <body>
+        <h1>Bridge Game</h1>
+        <!--<p>
+            <button onClick="initWebSocket();">Connect(Start Game for example)</button>
+            <button onClick="test();">Disconnect(it will be automatically)</button>
+            <button onClick="checkSocket();">State</button>
+        </p>-->
+        <p>
+            <button onClick="sendMessage();">Send</button>
+        </p>
+        <div id="test-area">123</div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="js/globalism.js"></script>
+        <script src="js/test.js"></script>
+
+        <script>
+            $(document).ready(function() {
+                initWebSocket();
+            });
+        </script>
+    </body>
+</html>

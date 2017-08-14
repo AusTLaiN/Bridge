@@ -15,6 +15,9 @@ public:
     virtual QString toString() override;
     virtual QJsonObject toJson() override;
     virtual void fromJson(const QJsonObject &json) override;
+
+    QString getText();
+    void setText(QString text);
 };
 
 typedef HtmlDataObject StringDataObject;

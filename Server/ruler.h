@@ -5,19 +5,18 @@
 #include "command.h"
 #include "card.h"
 
-using namespace bridge_game;
-
 namespace bridge_server
 {
 
 class Ruler
 {
 public:
-    static bool checkTurn(CardPtr activeCard, CardList turnCards, Card::Suit currentSuit = Card::Suit::UndefinedSuit);
-    static bool checkCombo(CardList turnCards);
-    static Card::Rank getSpecialComboRank(CardList turnCards);
-    static bool isCombo(CardList turnCards);
+    static bool checkTurn(bridge_game::CardPtr activeCard, bridge_game::CardList turnCards, bridge_game::Card::Suit currentSuit = bridge_game::Card::Suit::UndefinedSuit);
+    static bool checkCombo(bridge_game::CardList turnCards);
+    static bridge_game::Card::Rank getSpecialComboRank(bridge_game::CardList turnCards);
+    static bool isCombo(bridge_game::CardList turnCards);
 };
 
 } // bridge_server
+
 #endif // RULER_H

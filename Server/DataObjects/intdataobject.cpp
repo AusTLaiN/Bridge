@@ -30,7 +30,7 @@ QJsonObject IntDataObject::toJson()
 void IntDataObject::fromJson(const QJsonObject &json)
 {
     DataObject::fromJson(json);
-    if(!json["value"].isUndefined() && json["value"].isString())
+    if(!json["value"].isUndefined() && json["value"].isDouble())
         m_value = static_cast<uint>(json["value"].toInt());
     else
         addJsonError("value");

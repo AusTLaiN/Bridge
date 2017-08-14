@@ -66,6 +66,17 @@ HEADERS += \
     Game/Actions/actionrefilldeck.h \
     Game/Actions/actiongamestart.h \
     Game/Actions/actionsetactivesuit.h \
+    Server/command.h \
+    Server/DataObjects/dataobject.h \
+    Server/dataobjectfactory.h \
+    Server/message.h \
+    Server/ruler.h \
+    Server/server.h \
+    Server/DataObjects/htmldataobject.h \
+    Server/DataObjects/intdataobject.h \
+    Server/DataObjects/flagdataobject.h \
+    Server/DataObjects/cardlistdataobject.h \
+    Server/gameobjectsmanager.h
     Server/server.h
 
 # The following define makes your compiler emit warnings if you use

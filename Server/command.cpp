@@ -2,17 +2,22 @@
 
 using namespace bridge_server;
 
-Command::Command()
-    : m_action(ACTION::UndefinedAction)
+Command::Command(QObject* parent)
+    : QObject(parent), m_action(ACTION::UndefinedAction)
 {
 }
 
-Command::Command(ACTION action)
-    : m_action(action)
+Command::Command(ACTION action, QObject* parent)
+    : QObject(parent),m_action(action)
 {
 }
 
-Command::ACTION Command::getAction()
+Command::~Command()
+{
+    qDebug() << "cmdDestr";
+}
+
+Command::ACTION Command::getAction() const
 {
     return m_action;
 }

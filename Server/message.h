@@ -8,14 +8,17 @@
 
 namespace bridge_server {
 
-class Message  : public Serializable
+class Message  : public bridge_game::Serializable
 {
-    Command m_cmd; // instead header
+    Command::ACTION m_action; // instead header
     DataObjectPtr m_dataObj;
 
 public:
-    Message(Command& cmd, DataObjectPtr dataObj);
-    Message(const QJsonObject &json);
+    Message(Command::ACTION action, DataObject* dataObj);
+    Message(const QString& mes);
+
+    Command::ACTION getAction();
+    DataObject* getDataObject();
 
     virtual QJsonObject toJson();
     virtual void fromJson(const QJsonObject &json);

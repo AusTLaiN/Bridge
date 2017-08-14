@@ -38,3 +38,13 @@ void HtmlDataObject::fromJson(const QJsonObject &json)
 
     hasJsonError(true);
 }
+
+QString HtmlDataObject::getText()
+{
+    return m_html;
+}
+
+void HtmlDataObject::setText(QString text)
+{
+    m_html = text;
+}

@@ -16,8 +16,8 @@ class DataObjectFactory
 public:
     DataObjectFactory();
 
-    static DataObjectPtr getInnerDataObject(Command& cmd, const QJsonObject& json);
-    static DataObjectPtr getOuterDataObject(Command& cmd);
+    static DataObject* getInnerDataObject(const Command::ACTION action, const QJsonObject& json);
+    static DataObject* getOuterDataObject(const Command::ACTION action);
 };
 
 } // bridge_server

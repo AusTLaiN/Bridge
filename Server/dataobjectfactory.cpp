@@ -3,41 +3,42 @@
 using namespace bridge_game;
 using namespace bridge_server;
 
-DataObjectPtr DataObjectFactory::getInnerDataObject(Command& cmd, const QJsonObject& json)
+DataObject* DataObjectFactory::getInnerDataObject(const Command::ACTION action, const QJsonObject& json)
 {
-    switch(cmd.getAction())
+    switch(action)
     {
+        case Command::ACTION::GamesInfoRequest:
         case Command::ACTION::SuitOrderRequest:
         case Command::ACTION::ScoreTableRequest:
         case Command::ACTION::ActiveSuitRequest:
         case Command::ACTION::CreateGameRequest:
-            return DataObjectPtr(new DataObject(json));
+            return new DataObject(json);
         case Command::ACTION::ChatMessage:
-            return DataObjectPtr(new HtmlDataObject(json));
+            return new HtmlDataObject(json);
         case Command::ACTION::JoinToGameRequest:
-            return DataObjectPtr(new IntDataObject(json));
+            return new IntDataObject(json);
         case Command::ACTION::TurnRequest:
         case Command::ACTION::LeaveGameRequest:
-            return DataObjectPtr(new CardListDataObject(json));
+            return new CardListDataObject(json);
         case Command::ACTION::ReadyResponse:
         case Command::ACTION::BridgeResponse:
-            return DataObjectPtr(new FlagDataObject(json));
+            return new FlagDataObject(json);
         default:
             qDebug() << "DataObjectFactory::getInnerDataObject: Unknown Command::ACTION" << endl;
-            return DataObjectPtr(Q_NULLPTR);
+            return Q_NULLPTR;
     }
 }
 
-DataObjectPtr DataObjectFactory::getOuterDataObject(Command& cmd)
+DataObject* DataObjectFactory::getOuterDataObject(const Command::ACTION action)
 {
-    switch(cmd.getAction())
+    switch(action)
     {
         case Command::ACTION::CardForYouself:
         case Command::ACTION::ShakeDeckAnimation:
         case Command::ACTION::SuitOrderRequest:
         case Command::ACTION::BridgeRequest:
         case Command::ACTION::ReadyRequest:
-            return DataObjectPtr(new DataObject());
+            return new DataObject();
         case Command::ACTION::SkipTurnForYouself:
         case Command::ACTION::SkipTurnForOpponent:
         case Command::ACTION::SuitOrderResponse:
@@ -46,15 +47,15 @@ DataObjectPtr DataObjectFactory::getOuterDataObject(Command& cmd)
         case Command::ACTION::GamesInfoResponse:
         case Command::ACTION::ScoreTableResponse:
         case Command::ACTION::ActiveSuitResponse:
-            return DataObjectPtr(new HtmlDataObject());
+            return new HtmlDataObject();
         case Command::ACTION::CreateGameResponse:
         case Command::ACTION::JoinToGameResponse:
         case Command::ACTION::CardForOpponent:
-            return DataObjectPtr(new IntDataObject());
+            return new IntDataObject();
         case Command::ACTION::TurnResponse:
-            return DataObjectPtr(new CardListDataObject());
+            return new CardListDataObject();
         default:
-            qDebug() << "DataObjectFactory::getInnerDataObject: Unknown Command::ACTION" << endl;
-            return DataObjectPtr(Q_NULLPTR);
+            qDebug() << "DataObjectFactory::getOuterDataObject: Unknown Command::ACTION" << endl;
+            return Q_NULLPTR;
     }
 }

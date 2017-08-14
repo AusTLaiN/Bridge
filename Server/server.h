@@ -22,24 +22,19 @@ public:
     explicit Server(quint16 port, QObject *parent = Q_NULLPTR);
     virtual ~Server();
 
-    void sendCommandList();
-    bool initNewGame();
-
 private Q_SLOTS:
     void onNewConnection();
     void processMessage(QString message);
     void socketDisconnected();
-    uint getGameIdByPlayerId(uint PlayerId);
 private:
-    bool waitAnswerFlag;
+    // bool waitAnswerFlag;
 
     static uint m_playerIdCounter;
     static uint m_gameIdCounter;
 
     QWebSocketServer * m_pWebSocketServer;
     QList<QWebSocket *> m_playersOutOfGame;
-    QMap<uint, QWebSocket *> m_players;
-    QMap<uint, uint> m_PlayersGamesLink;
+    QMap<uint, QWebSocket *> m_playersInGame;
     QMap<uint, bridge_game::GamePtr> m_games;
 };
 

@@ -16,7 +16,8 @@
             <input type="text" id="inputText" onkeydown="if(event.keyCode==13)sendMessage();"/>
             <button onClick="sendMessage();">Send</button>
         </p>
-
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script type="text/javascript">
             var debugTextArea = document.getElementById("debugTextArea");
             function debug(message) {
@@ -41,8 +42,10 @@
                 try {
                     if (typeof MozWebSocket == 'function')
                         WebSocket = MozWebSocket;
-                    if ( websocket && websocket.readyState == 1 )
-                        websocket.close();
+                    if ( websocket && websocket.readyState == 1 ){
+                        debug("ALREADY CONNECTED");
+                        return;
+                    }
                     websocket = new WebSocket( wsUri );
                     websocket.onopen = function (evt) {
                         debug("CONNECTED");

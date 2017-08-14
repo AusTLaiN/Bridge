@@ -1,14 +1,15 @@
 #ifndef COMMAND_H
 #define COMMAND_H
 
-//#include <QMetaEnum>
+#include <QMetaEnum>
 #include "global.h"
 
 namespace bridge_server {
 
 // class instead header
-class Command
+class Command : public QObject
 {
+    Q_OBJECT
 public:
     // Contract with client
     enum ACTION {
@@ -47,13 +48,13 @@ public:
         ActiveSuitRequest,
         LeaveGameRequest
     };
-    //Q_ENUM(ACTION)
+    Q_ENUM(ACTION)
 
-    ACTION getAction();
+    ACTION getAction() const;
 
-    Command();
-    Command(ACTION action);
-
+    explicit Command(QObject* parent = 0);
+    explicit Command(ACTION action, QObject* parent = 0);
+    virtual ~Command();
 private:
     ACTION m_action;
 };

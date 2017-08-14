@@ -34,7 +34,7 @@ uint Server::m_gameIdCounter = 0;
 Server::~Server()
 {
     m_pWebSocketServer->close();
-    qDeleteAll(m_players.begin(), m_players.end());
+    qDeleteAll(m_playersOutOfGame.begin(), m_playersOutOfGame.end());
 }
 
 void Server::onNewConnection()
@@ -57,13 +57,18 @@ void Server::processMessage(QString message)
         pClient->sendTextMessage(message);
     }*/
 
-    // ?.......
-    Command cmd = Command(Command::ACTION::GamesInfoRequest); //
-    switch(cmd.getAction())
+    /*QVariant var = pSender->property("gameId");
+    int id = var.toInt();
+
+    qDebug() << id;*/
+
+
+    QScopedPointer<Message> innerMessage(new Message(message));
+    switch(innerMessage->getAction())
     {
         case Command::ACTION::GamesInfoRequest:
         {
-            char html[] = "<ul><li>test1</li><li>test2</li></ul>";
+            QString html("<ul><li>test1</li><li>test2</li></ul>");
             pSender->sendTextMessage(html);
         }
             break;
@@ -73,27 +78,52 @@ void Server::processMessage(QString message)
             m_gameIdCounter++;
             m_playerIdCounter++;
             // New game creation
-            GamePtr game = GamePtr(new Game(m_gameIdCounter));
+            GamePtr game(new Game(m_gameIdCounter));
             m_games[m_gameIdCounter] = game;
 
-            // Saving callback channel by playerId
-            m_players[m_playerIdCounter] = pSender;
-            // Saving link - playerId => gameId
-            m_PlayersGamesLink[m_playerIdCounter] = m_gameIdCounter;
+            // Saving callback channel
+            m_playersInGame[m_playerIdCounter] = pSender;
+            // Saving IDs
+            pSender->setProperty("playerId", m_playerIdCounter);
+            pSender->setProperty("gameId", m_gameIdCounter);
 
-            PlayerPtr player = PlayerPtr(new Player(m_playerIdCounter));
-            m_games[m_PlayersGamesLink[player->getId()]]->join(player);
+            PlayerPtr player = PlayerPtr(new Player(pSender->property("playerId").toInt()));
+            m_games[pSender->property("GameId").toInt()]->join(player);
 
             m_playersOutOfGame.removeAll(pSender);
         }
             break;
         case Command::ACTION::JoinToGameRequest:
         {
-
         }
             break;
         case Command::ACTION::LeaveGameRequest:
+        {
+        }
             break;
+        case Command::ACTION::ChatMessage:
+        {
+            StringDataObject* Obj = dynamic_cast<StringDataObject*>(innerMessage->getDataObject());
+            QString messageToChat(Obj->getText());
+
+            StringDataObject* StringObj = dynamic_cast<StringDataObject*>(DataObjectFactory::getOuterDataObject(Command::ACTION::ChatMessage));
+            StringObj->setText(messageToChat);
+
+            Message outerMessage(Command::ACTION::ChatMessage, StringObj);
+
+            if(m_playersOutOfGame.contains(pSender))
+            {
+                for (QWebSocket* pClient : qAsConst(m_playersOutOfGame))
+                {
+                    pClient->sendTextMessage(outerMessage.toJsonDoc().toJson());
+                }
+            }
+            else
+            {
+
+            }
+        }
+        break;
     }
 }
 
@@ -107,14 +137,4 @@ void Server::socketDisconnected()
         m_playersOutOfGame.removeAll(pClient);
         pClient->deleteLater();
     }
-}
-
-void Server::sendCommandList()
-{
-
-}
-
-uint Server::getGameIdByPlayerId(uint PlayerId)
-{
-    return m_PlayersGamesLink[PlayerId];
 }

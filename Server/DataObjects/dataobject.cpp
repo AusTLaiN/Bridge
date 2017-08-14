@@ -5,8 +5,13 @@ using namespace bridge_server;
 
 // Base class DataObject
 DataObject::DataObject()
-    : Serializable(), m_errors(), m_player(Q_NULLPTR), m_state(true)//, m_gameId(0)
+    : Serializable(), m_errors(), m_player(Q_NULLPTR), m_state(true)
 {
+}
+
+DataObject::~DataObject()
+{
+    qDebug() << "Data object destructor called";
 }
 
 DataObject::DataObject(const QJsonObject& json) : DataObject()
@@ -36,7 +41,7 @@ bool DataObject::getState()
 
 bool DataObject::isValid()
 {
-    return m_state && !m_player.isNull();
+    return m_state && !m_player.isNull() && m_player->getId() > 0;
 }
 
 QString DataObject::toString()
@@ -48,10 +53,16 @@ QJsonObject DataObject::toJson()
 {
     QJsonObject json;
 
-    json["state"]  = m_state && hasJsonError();
-    //json["gameId"] = m_gameId;
-    json["player"] = Player::serialize(m_player);
-    json["name"]   = toString();
+    json["state"] = m_state && hasJsonError();
+    if(this->isValid())
+        json["player"] = Player::serialize(m_player);
+    else
+    {
+        qDebug() << "DataObject::toJson: Invalid DataObject";
+        json["player"] = QJsonObject();
+    }
+
+    json["name"] = toString();
 
     return json;
 }
@@ -93,6 +104,6 @@ void DataObject::clearErrorStack()
 
 void DataObject::addJsonError(const QString& err)
 {
-    m_errors << toString() + "::fromJson: [" << err << "] node is undefined or has invalid type";
+    m_errors << toString() + "::fromJson: [" + err + "] node is undefined or has invalid type";
     setState(false);
 }
