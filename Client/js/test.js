@@ -1,8 +1,8 @@
-function onMessage(e) {
+/*function onMessage(e) {
 //    $("#test-area").html(e.data);
 //    alert(e.data);
     var inObj = JSON.parse(e.data);
-    alert(inObj.dataobject.html);
+//    alert(inObj.dataobject.html);
     switch(parseInt(inObj.action)) 
     {
         case Actions.GamesInfoResponse:
@@ -30,7 +30,7 @@ function onError(e){
 
 function sendMessage(outObj) {
     //var msg = document.getElementById("inputText").value;
-    /*var msg = {
+    var msg = {
         'action': 202, 
         'dataobject': {
             'state': true,
@@ -57,9 +57,9 @@ function sendMessage(outObj) {
             },
             'value': 22
         }
-    };*/
+    };
     
-    var data = { dataString: "Hello World!" };
+    var data = "Hello World!";
     var msg = new OuterMessage(Actions.ChatMessage, data);
     
     if ( websocket != null )
@@ -67,4 +67,4 @@ function sendMessage(outObj) {
         websocket.send(JSON.stringify(msg));
         alert(JSON.stringify(msg));
     }
-};
+};*/

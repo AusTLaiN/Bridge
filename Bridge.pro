@@ -35,7 +35,16 @@ SOURCES += \
     Game/abstractcardfactory.cpp \
     Game/abstractdeckfactory.cpp \
     Game/Actions/actionsetactivesuit.cpp \
-    Server/server.cpp
+    Server/command.cpp \
+    Server/DataObjects/dataobject.cpp \
+    Server/dataobjectfactory.cpp \
+    Server/message.cpp \
+    Server/ruler.cpp \
+    Server/server.cpp \
+    Server/DataObjects/htmldataobject.cpp \
+    Server/DataObjects/intdataobject.cpp \
+    Server/DataObjects/flagdataobject.cpp \
+    Server/DataObjects/cardlistdataobject.cpp \
 
 HEADERS += \
     Game/Cards/ace.h \
@@ -77,7 +86,6 @@ HEADERS += \
     Server/DataObjects/flagdataobject.h \
     Server/DataObjects/cardlistdataobject.h \
     Server/gameobjectsmanager.h
-    Server/server.h
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings

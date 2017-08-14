@@ -10,16 +10,18 @@
             <button onClick="checkSocket();">State</button>
         </p>-->
         <p>
-            <button onClick="sendMessage();">Send</button>
+            <button onClick="WS.sendMessage();">Send</button>
         </p>
         <div id="test-area">123</div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="js/globalism.js"></script>
         <script src="js/test.js"></script>
+        <script src="js/message.js"></script>
+        <script src="js/websocket.js"></script>
 
         <script>
             $(document).ready(function() {
-                initWebSocket();
+                WS = new WebSocketManager("ws://localhost:8080");
             });
         </script>
     </body>

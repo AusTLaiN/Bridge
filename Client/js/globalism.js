@@ -1,7 +1,13 @@
-var wsUri = "ws://localhost:8080";
-var websocket = null;
+//var wsUri = "ws://localhost:8080";
+//var websocket = null;
+var WS = null;
 
-const Actions = {
+const DIRECTION = { 
+    In: 1, 
+    Out: 2
+};
+
+const ACTION = {
     UndefinedAction:     0,
     CardForYouself:      1, 
     CardForOpponent:     2,
@@ -37,7 +43,7 @@ const Actions = {
     LeaveGameRequest:   211
 };
 
-var player = {
+var PLAYER = {
     id: 0,
     name: "somename",
     address: "someaddress",
@@ -46,42 +52,7 @@ var player = {
     cards: []
 };
 
-class OuterMessage
-{
-    constructor(action, data) { 
-        this.action = action;
-        this.dataobject = this.getDataObject(data);
-    }
-    
-    getDataObject(data) {
-        var dataObj;
-        switch(this.action)
-        {
-            case Actions.CreateGameRequest:
-            {
-                dataObj = {
-                    state: true,
-                    player: player,
-                    html: data.dataString,
-                }
-                return dataObj;
-            }
-            case Actions.ChatMessage:
-            {
-                dataObj = {
-                    state: true,
-                    player: player,
-                    html: data.dataString,
-                }
-                return dataObj;
-            }
-        }
-    }
-    
-    
-    foo() { alert("bar"); }
-}
-
+/*
 function initWebSocket() {
     try {
         if (typeof MozWebSocket == 'function')
@@ -133,3 +104,4 @@ function checkSocket() {
         debug("WebSocket is null");
     }
 }
+*/
